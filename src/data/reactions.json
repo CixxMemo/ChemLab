@@ -1,0 +1,180 @@
+[
+  {
+    "id": "nacl",
+    "nameTR": "Sodyum Klorür (Yemek Tuzu)",
+    "formula": "NaCl",
+    "reactantKeys": ["Na", "Cl"],
+    "stoichiometry": [
+      { "symbol": "Na", "count": 1 },
+      { "symbol": "Cl", "count": 1 }
+    ],
+    "bondType": "ionic",
+    "deltaEN": 2.23,
+    "descriptionTR": "Na atomu 1 valans elektronunu Cl atomuna aktarır. Na⁺ katyonu ve Cl⁻ anyonu oluşarak elektrostatik çekimle iyonik bağ kurulur (ΔEN = 2.23 > 1.7).",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Başlangıç Durumu",
+        "descriptionTR": "Sodyum (Na, EN=0.93) ve Klor (Cl, EN=3.16) atomları etkileşim mesafesinde yaklaşıyor.",
+        "highlightAtom": "Na"
+      },
+      {
+        "progressThreshold": 0.35,
+        "titleTR": "Elektron Transferi (ΔEN = 2.23)",
+        "descriptionTR": "ΔEN > 1.7 olduğu için Na valans elektronunu tamamen kaybeder ve elektron Cl'nin dış katmanına geçer.",
+        "highlightAtom": "Cl"
+      },
+      {
+        "progressThreshold": 0.75,
+        "titleTR": "İyon Oluşumu ve Oktet Sağlanması",
+        "descriptionTR": "Na'nın dış katmanı kapanarak [2,8] Na⁺ katyonu, Cl ise [2,8,8] Cl⁻ anyonu haline gelerek oktet tamamlanır.",
+        "highlightAtom": "Na"
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "İyonik Bağ Tamamlandı",
+        "descriptionTR": "Zıt yüklü iyonlar arasında güçlü elektrostatik çekim kuvvetiyle 1:1 oranında NaCl kristal bağı oluşur."
+      }
+    ]
+  },
+  {
+    "id": "h2o",
+    "nameTR": "Su Molekülü",
+    "formula": "H₂O",
+    "reactantKeys": ["H", "O"],
+    "stoichiometry": [
+      { "symbol": "H", "count": 2 },
+      { "symbol": "O", "count": 1 }
+    ],
+    "bondType": "polar-covalent",
+    "deltaEN": 1.24,
+    "descriptionTR": "Merkezdeki O atomu, iki H atomu ile birer elektronunu ortaklaşa kullanır. Oksijenin elektronegatifliği daha yüksek olduğu için elektronlar oksijene daha yakın döner (ΔEN = 1.24, Polar Kovalent).",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Başlangıç Konfigürasyonu",
+        "descriptionTR": "1 Oksijen (EN=3.44) ve 2 Hidrojen (EN=2.20) atomu yaklaşarak bağ açısı konumuna yerleşir.",
+        "highlightAtom": "O"
+      },
+      {
+        "progressThreshold": 0.4,
+        "titleTR": "Kabuk Kesişimi (0.4 < ΔEN ≤ 1.7)",
+        "descriptionTR": "Hidrojen ve Oksijenin dış enerji katmanları kesişerek ortaklaşa elektron paylaşım alanı oluşturur.",
+        "highlightAtom": "H"
+      },
+      {
+        "progressThreshold": 0.75,
+        "titleTR": "Kutup Oluşumu (Polar Kovalent)",
+        "descriptionTR": "Elektron çiftleri elektronegatifliği yüksek Oksijene doğru asimetrik çekilir (Kısmi negatif δ⁻ Oksijen, kısmi pozitif δ⁺ Hidrojenler).",
+        "highlightAtom": "O"
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "Dublet ve Oktet Tamamlandı",
+        "descriptionTR": "Her iki Hidrojen dubletini (2 e⁻), merkez Oksijen ise oktetini (8 e⁻) tamamlayarak kararlı 2 adet tekli polar kovalent bağ (O–H) kurar."
+      }
+    ]
+  },
+  {
+    "id": "ch4",
+    "nameTR": "Metan Gazı",
+    "formula": "CH₄",
+    "reactantKeys": ["C", "H"],
+    "stoichiometry": [
+      { "symbol": "C", "count": 1 },
+      { "symbol": "H", "count": 4 }
+    ],
+    "bondType": "nonpolar-covalent",
+    "deltaEN": 0.35,
+    "descriptionTR": "ΔEN = |2.55 - 2.20| = 0.35 ≤ 0.4 kuralına göre C–H bağları apolar kovalenttir. Merkezdeki Karbon atomu, 4 Hidrojen ile 4 ayrı tekli apolar kovalent bağ kurar.",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Merkez Karbon ve 4 Hidrojen",
+        "descriptionTR": "4 valans elektronlu Karbon atomu (EN=2.55) merkezde yer alır, 4 Hidrojen atomu (EN=2.20) simetrik olarak yaklaşır.",
+        "highlightAtom": "C"
+      },
+      {
+        "progressThreshold": 0.4,
+        "titleTR": "4 Ayrı Kabuk Kesişimi",
+        "descriptionTR": "4 Hidrojen atomu Karbonun dış katmanıyla dört farklı yönde kesişir.",
+        "highlightAtom": "H"
+      },
+      {
+        "progressThreshold": 0.75,
+        "titleTR": "Apolar Ortaklaşa Paylaşım (ΔEN = 0.35 ≤ 0.4)",
+        "descriptionTR": "Elektronegatiflik farkı 0.35 olduğu için elektron çiftleri simetrik ve eşit paylaşılır (Apolar Kovalent).",
+        "highlightAtom": "C"
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "Metan Molekülü Tamamlandı",
+        "descriptionTR": "Karbon oktetini (8 e⁻), 4 Hidrojen dubletini (2 e⁻) tamamlayarak kararlı CH₄ molekülünü oluşturur."
+      }
+    ]
+  },
+  {
+    "id": "o2",
+    "nameTR": "Oksijen Gazı",
+    "formula": "O₂",
+    "reactantKeys": ["O", "O"],
+    "stoichiometry": [
+      { "symbol": "O", "count": 2 }
+    ],
+    "bondType": "nonpolar-covalent",
+    "deltaEN": 0.00,
+    "descriptionTR": "İki özdeş Oksijen atomu ikişer elektronunu (toplam 4 elektron) eşit paylaşarak ikili apolar kovalent bağ (O=O) kurar (ΔEN = 0.0).",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Başlangıç Durumu",
+        "descriptionTR": "İki özdeş Oksijen atomu (EN=3.44, 6 valans elektronu) birbirine yaklaşır.",
+        "highlightAtom": "O"
+      },
+      {
+        "progressThreshold": 0.4,
+        "titleTR": "Simetrik Kabuk Kesişimi (ΔEN = 0.0)",
+        "descriptionTR": "Elektronegatiflik farkı sıfır olduğu için atom katmanları tam simetrik olarak kesişir.",
+        "highlightAtom": "O"
+      },
+      {
+        "progressThreshold": 0.75,
+        "titleTR": "İkili Bağ Oluşumu (4 Ortak Elektron)",
+        "descriptionTR": "Her atom 2 elektron katkıda bulunarak kesişim bölgesinde tam ortada 2 elektron çifti oluşturur.",
+        "highlightAtom": "O"
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "Apolar Kovalent Bağ Tamamlandı",
+        "descriptionTR": "Her iki Oksijen atomu da 8 elektrona ulaşarak kararlı O=O ikili apolar kovalent bağını tamamlar."
+      }
+    ]
+  },
+  {
+    "id": "inert_gas",
+    "nameTR": "Soygaz Etkileşimi (Asal Kararlılık)",
+    "formula": "Tepkime Yok (no-bond)",
+    "reactantKeys": ["He", "Ne", "Ar", "Kr", "Xe", "Rn"],
+    "stoichiometry": [],
+    "bondType": "no-bond",
+    "deltaEN": null,
+    "descriptionTR": "Soygazlar (He, Ne, Ar) zaten kararlı bir elektron dizilimine (tam dolu oktet/dublet) sahiptir; tepkimeye girmez ve bağ oluşturmaz.",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Soygaz Yaklaşımı",
+        "descriptionTR": "Kararlı tam dolu katmana sahip soygaz atomu sisteme dahil ediliyor."
+      },
+      {
+        "progressThreshold": 0.5,
+        "titleTR": "Elektronik İtme (Repulsion)",
+        "descriptionTR": "Soygazın dış kabuğundaki dolu elektron çiftleri diğer atomların elektronlarını iter."
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "Kimyasal Tepkime Engellendi",
+        "descriptionTR": "Soygazlar oktet/dublet kararlılığı nedeniyle bağ oluşturmaz. Sistem kararlı ve asal kalır."
+      }
+    ]
+  }
+]
