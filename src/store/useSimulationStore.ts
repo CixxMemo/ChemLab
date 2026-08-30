@@ -26,6 +26,7 @@ interface SimulationStore {
   filterCategory: string | null;
   viewMode: 'standard' | 'electronegativity';
   isFullscreen: boolean;
+  isAnimationModalOpen: boolean;
 
   // Actions
   selectElement: (element: ElementData) => void;
@@ -40,6 +41,9 @@ interface SimulationStore {
   setFilterCategory: (category: string | null) => void;
   setViewMode: (mode: 'standard' | 'electronegativity') => void;
   toggleFullscreen: () => void;
+  openAnimationModal: () => void;
+  closeAnimationModal: () => void;
+  toggleAnimationModal: () => void;
   resetSimulation: () => void;
 }
 
@@ -59,6 +63,7 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
   filterCategory: null,
   viewMode: 'standard',
   isFullscreen: false,
+  isAnimationModalOpen: false,
 
   selectElement: (element: ElementData) => {
     const current = get().selectedElements;
@@ -177,6 +182,10 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
       set({ isFullscreen: false });
     }
   },
+
+  openAnimationModal: () => set({ isAnimationModalOpen: true }),
+  closeAnimationModal: () => set({ isAnimationModalOpen: false }),
+  toggleAnimationModal: () => set((state) => ({ isAnimationModalOpen: !state.isAnimationModalOpen })),
 
   resetSimulation: () => {
     set({

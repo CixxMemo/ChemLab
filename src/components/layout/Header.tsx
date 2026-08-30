@@ -11,7 +11,8 @@ export const Header: React.FC = () => {
     setViewMode,
     resetSimulation,
     isFullscreen,
-    toggleFullscreen
+    toggleFullscreen,
+    openAnimationModal
   } = useSimulationStore();
 
   return (
@@ -88,11 +89,21 @@ export const Header: React.FC = () => {
           <RotateCcw className="w-4 h-4" />
         </button>
 
+        {/* Animation Modal Button */}
+        <button
+          onClick={openAnimationModal}
+          className="h-9 px-3 rounded bg-slate-900 border border-slate-700 text-slate-300 hover:text-slate-50 hover:bg-slate-800 flex items-center gap-1.5 transition-colors touch-target font-mono text-xs"
+          title="Animasyonu Büyük Modal Olarak Aç"
+        >
+          <Maximize2 className="w-4 h-4 text-chem-transition" />
+          <span className="hidden sm:inline">Büyük Ekran</span>
+        </button>
+
         {/* Fullscreen Button */}
         <button
           onClick={toggleFullscreen}
           className="w-9 h-9 rounded bg-slate-900 border border-slate-700 text-slate-300 hover:text-slate-50 hover:bg-slate-800 flex items-center justify-center transition-colors touch-target"
-          title={isFullscreen ? 'Tam Ekrandan Çık' : 'Tam Ekran (Akıllı Tahta)'}
+          title={isFullscreen ? 'Tam Ekrandan Çık' : 'Tarayıcı Tam Ekranı'}
         >
           {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
         </button>

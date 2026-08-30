@@ -4,6 +4,7 @@ import { PeriodicTable } from '../table/PeriodicTable';
 import { SimulationCanvas } from '../simulation/SimulationCanvas';
 import { PlaybackControls } from '../simulation/PlaybackControls';
 import { LiveInfoPanel } from '../theory/LiveInfoPanel';
+import { SimulationModal } from '../simulation/SimulationModal';
 
 export const AppLayout: React.FC = () => {
   return (
@@ -34,6 +35,9 @@ export const AppLayout: React.FC = () => {
           </div>
         </section>
       </main>
+
+      {/* Large-Scale Simulation & Animation Modal */}
+      <SimulationModal />
     </div>
   );
 };
