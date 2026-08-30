@@ -164,13 +164,24 @@ export const SimulationModal: React.FC = () => {
     }
   };
 
+  const isSingleElement = selectedElements.length === 1 && !activeScenario;
+  const singleElement = isSingleElement ? selectedElements[0] : null;
+
   const deltaEN = bondAnalysis ? bondAnalysis.deltaEN : activeScenario ? activeScenario.deltaEN : null;
   const bondType = bondAnalysis ? bondAnalysis.bondType : activeScenario ? activeScenario.bondType : 'no-bond';
 
   let bondTypeLabel = 'Belirsiz Etkileşim';
   let badgeColor = 'bg-slate-800 text-slate-300 border-slate-700';
 
-  if (bondType === 'ionic') {
+  if (isSingleElement && singleElement) {
+    if (singleElement.category === 'noble') {
+      bondTypeLabel = 'Soygaz (Kararlı Yapı)';
+      badgeColor = 'bg-purple-950/90 text-chem-halogen border-purple-600/70';
+    } else {
+      bondTypeLabel = `Valans: ${singleElement.valanceElectrons ?? '-'} e⁻ • 2. Element Seçin`;
+      badgeColor = 'bg-slate-800/90 text-chem-alkaline border-slate-700';
+    }
+  } else if (bondType === 'ionic') {
     bondTypeLabel = 'İyonik Bağ (ΔEN > 1.7)';
     badgeColor = 'bg-sky-950/90 text-chem-ionic border-sky-600/70';
   } else if (bondType === 'polar-covalent') {
@@ -212,7 +223,11 @@ export const SimulationModal: React.FC = () => {
             <div className="flex items-center gap-2 bg-slate-900 border border-slate-700 px-3 py-1.5 rounded">
               <Zap className="w-4 h-4 text-chem-electron" />
               <span className="font-mono font-bold text-sm text-slate-50">
-                {activeScenario ? activeScenario.formula : selectedElements.map(e => e.symbol).join(' + ')}
+                {activeScenario
+                  ? activeScenario.formula
+                  : isSingleElement && singleElement
+                  ? `${singleElement.symbol} (${singleElement.nameTR}) • Z=${singleElement.atomicNumber}`
+                  : selectedElements.map(e => e.symbol).join(' + ')}
               </span>
               {activeScenario && (
                 <span className="text-xs text-slate-400 font-sans hidden sm:inline">
@@ -221,13 +236,24 @@ export const SimulationModal: React.FC = () => {
               )}
             </div>
 
-            {/* ΔEN Badge */}
+            {/* ΔEN Badge / Single Element Position */}
             <div className="hidden sm:flex items-center gap-1.5 bg-slate-900 border border-slate-700 px-2.5 py-1.5 rounded font-mono text-xs">
               <Activity className="w-3.5 h-3.5 text-chem-transition" />
-              <span className="text-slate-400">ΔEN =</span>
-              <span className="font-bold text-chem-alkaline">
-                {deltaEN !== null ? deltaEN.toFixed(2) : 'n/a'}
-              </span>
+              {isSingleElement && singleElement ? (
+                <>
+                  <span className="text-slate-400">Konum:</span>
+                  <span className="font-bold text-slate-200">
+                    Grup {singleElement.group}, Periyot {singleElement.period}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-slate-400">ΔEN =</span>
+                  <span className="font-bold text-chem-alkaline">
+                    {deltaEN !== null ? deltaEN.toFixed(2) : 'n/a'}
+                  </span>
+                </>
+              )}
             </div>
 
             {/* Bond Type Badge */}
@@ -277,7 +303,7 @@ export const SimulationModal: React.FC = () => {
         {/* Modal Center Area: Full Scale Canvas */}
         <div ref={containerRef} className="relative flex-1 w-full bg-slate-950 overflow-hidden">
           {/* Live Step Explanation Floating HUD */}
-          {currentStep && (
+          {currentStep ? (
             <div className="absolute top-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md z-10 pointer-events-none">
               <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded shadow-lg flex flex-col gap-1">
                 <div className="flex items-center justify-between gap-2">
@@ -294,7 +320,27 @@ export const SimulationModal: React.FC = () => {
                 </p>
               </div>
             </div>
-          )}
+          ) : isSingleElement && singleElement ? (
+            <div className="absolute top-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md z-10 pointer-events-none">
+              <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded shadow-lg flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-chem-transition">
+                    <Info className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span>{singleElement.nameTR} ({singleElement.symbol}) İncelemesi</span>
+                  </div>
+                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-slate-950 border border-slate-700 text-slate-400">
+                    Z = {singleElement.atomicNumber}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                  {singleElement.summaryTR || `Katman Dağılımı: [${(singleElement.shells || []).join(', ')}] • Değerlik: ${singleElement.valanceElectrons ?? '-'} e⁻`}
+                </p>
+                <div className="text-[11px] font-mono text-chem-alkaline flex items-center gap-1 border-t border-slate-800 pt-1">
+                  <span>💡 Bağ kurmak için 2. bir element seçin</span>
+                </div>
+              </div>
+            </div>
+          ) : null}
 
           {/* Floating Octet Badges inside Modal Top Right */}
           {selectedElements.length > 0 && (

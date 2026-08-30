@@ -49,7 +49,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
                 <span className="font-bold text-chem-transition">{el.symbol}</span>
                 <span className="text-[10px] text-slate-400">({el.nameTR})</span>
                 <button
-                  onClick={() => deselectElement(el.symbol)}
+                  onClick={() => deselectElement(i)}
                   className="text-slate-400 hover:text-slate-200"
                   title={`${el.symbol} kaldır`}
                 >

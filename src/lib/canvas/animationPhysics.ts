@@ -26,13 +26,23 @@ export function renderScene(
 
   const { scenario, progress, rotation, selectedElements, elementsMap } = state;
 
-  if (!scenario || selectedElements.length === 0) {
+  if (selectedElements.length === 0) {
     drawIdleMessage(ctx, width, height);
     return;
   }
 
   const cx = width / 2;
   const cy = height / 2;
+
+  if (selectedElements.length === 1 && !scenario) {
+    renderSingleElementScene(ctx, cx, cy, rotation, selectedElements[0], width, height);
+    return;
+  }
+
+  if (!scenario) {
+    renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements);
+    return;
+  }
 
   switch (scenario.id) {
     case 'nacl':
@@ -90,11 +100,74 @@ function drawIdleMessage(ctx: CanvasRenderingContext2D, width: number, height: n
 
   ctx.fillStyle = '#64748B';
   ctx.font = '600 16px "Inter", sans-serif';
-  ctx.fillText('Sol tablodan iki element seçin veya hazır senaryoyu başlatın', width / 2, height / 2 - 15);
+  ctx.fillText('Sol tablodan bir element seçin veya hazır senaryoyu başlatın', width / 2, height / 2 - 15);
 
   ctx.fillStyle = '#475569';
   ctx.font = '13px "JetBrains Mono", monospace';
   ctx.fillText('Örn: Na + Cl (İyonik), H + O (Polar Kovalent), O + O (Apolar), C + H (Metan)', width / 2, height / 2 + 18);
+
+  ctx.restore();
+}
+
+/**
+ * Single Element Bohr Inspector Scene
+ */
+function renderSingleElementScene(
+  ctx: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  rotation: number,
+  element: ElementData,
+  _width: number,
+  height: number
+) {
+  const shells = element.shells || [element.atomicNumber];
+  const numShells = shells.length;
+
+  let baseRadius = 46;
+  let stepRadius = 26;
+  if (numShells === 3) {
+    baseRadius = 40;
+    stepRadius = 22;
+  } else if (numShells === 4) {
+    baseRadius = 36;
+    stepRadius = 18;
+  } else if (numShells >= 5) {
+    baseRadius = 32;
+    stepRadius = 15;
+  }
+
+  // Draw Bohr Orbit shells with revolving electrons
+  drawBohrShells(ctx, cx, cy, shells, baseRadius, stepRadius, rotation);
+
+  // Draw Nucleus
+  drawNucleus(ctx, cx, cy, element, 28);
+
+  const maxRadius = baseRadius + (numShells - 1) * stepRadius;
+
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Bottom information label
+  const bottomY = Math.min(height - 24, cy + maxRadius + 26);
+  ctx.font = '600 13px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#94A3B8';
+  ctx.fillText(
+    `Katman Dağılımı: [${shells.join(', ')}] • Toplam: ${element.atomicNumber} e⁻`,
+    cx,
+    bottomY
+  );
+
+  const promptY = Math.min(height - 8, bottomY + 18);
+  ctx.font = '500 11px "Inter", sans-serif';
+  ctx.fillStyle = '#64748B';
+  ctx.fillText('Kimyasal bağ simülasyonu için 2. bir element seçin', cx, promptY);
+
+  // If noble gas, show stable badge
+  if (element.category === 'noble') {
+    drawIonBadge(ctx, cx, cy - maxRadius - 25, 'Asal Soygaz (Kararlı Oktet/Dublet)', 'anion');
+  }
 
   ctx.restore();
 }

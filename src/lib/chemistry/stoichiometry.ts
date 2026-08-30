@@ -13,11 +13,12 @@ const reactions: ReactionScenario[] = rawReactions as ReactionScenario[];
  * 5. Noble gas (He, Ne, Ar, Kr, Xe, Rn -> no-bond / inert repulsion)
  */
 export function resolveScenario(selectedSymbols: string[]): ReactionScenario | null {
-  if (!selectedSymbols || selectedSymbols.length === 0) {
+  // Reaction scenarios strictly require AT LEAST 2 elements (e.g. O+O, Na+Cl, H+O, C+H, He+He)
+  if (!selectedSymbols || selectedSymbols.length < 2) {
     return null;
   }
 
-  // 1. Noble Gas Non-Reactivity (Section 10)
+  // 1. Noble Gas Non-Reactivity (requires 2+ elements where at least one is noble)
   const nobleSymbols = ['He', 'Ne', 'Ar', 'Kr', 'Xe', 'Rn'];
   const hasNoble = selectedSymbols.some(s => nobleSymbols.includes(s));
   if (hasNoble) {
@@ -27,24 +28,24 @@ export function resolveScenario(selectedSymbols: string[]): ReactionScenario | n
 
   const uniqueSymbols = Array.from(new Set(selectedSymbols));
 
-  // 2. Scenario 1: NaCl (Section 6 & 7)
+  // 2. Scenario 1: NaCl (Na + Cl)
   if (uniqueSymbols.includes('Na') && uniqueSymbols.includes('Cl')) {
     return reactions.find(r => r.id === 'nacl') || null;
   }
 
-  // 3. Scenario 2: H2O (Section 6 & 8)
+  // 3. Scenario 2: H2O (H + O)
   if (uniqueSymbols.includes('H') && uniqueSymbols.includes('O')) {
     return reactions.find(r => r.id === 'h2o') || null;
   }
 
-  // 4. Scenario 4: CH4 (Section 6 & 8)
+  // 4. Scenario 4: CH4 (C + H)
   if (uniqueSymbols.includes('C') && uniqueSymbols.includes('H')) {
     return reactions.find(r => r.id === 'ch4') || null;
   }
 
   // 5. Scenario 3: Diatomic Elements Rule (Section 9 - "BrINClHOF")
-  // Selecting O or duplicate O auto-pairs to O2
-  if (selectedSymbols.every(s => s === 'O')) {
+  // Only triggers when TWO Oxygen atoms are explicitly selected: [O, O]
+  if (selectedSymbols.length >= 2 && selectedSymbols.every(s => s === 'O')) {
     return reactions.find(r => r.id === 'o2') || null;
   }
 

@@ -30,7 +30,7 @@ interface SimulationStore {
 
   // Actions
   selectElement: (element: ElementData) => void;
-  deselectElement: (symbol: string) => void;
+  deselectElement: (target: string | number) => void;
   setHoveredElement: (element: ElementData | null) => void;
   loadScenarioById: (scenarioId: string) => void;
   setPlaybackStatus: (status: PlaybackStatus) => void;
@@ -79,15 +79,11 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
     }
 
     const symbols = nextSelection.map(e => e.symbol);
-    const scenario = resolveScenario(symbols);
+    const scenario = nextSelection.length >= 2 ? resolveScenario(symbols) : null;
 
     let bond: BondAnalysis | null = null;
     if (nextSelection.length >= 2) {
       bond = resolveBond(nextSelection[0], nextSelection[1]);
-    } else if (nextSelection.length === 1) {
-      if (nextSelection[0].category === 'noble' || nextSelection[0].electronegativity === null || scenario?.id === 'o2') {
-        bond = resolveBond(nextSelection[0], nextSelection[0]);
-      }
     }
 
     set({
@@ -95,18 +91,34 @@ export const useSimulationStore = create<SimulationStore>((set, get) => ({
       activeScenario: scenario,
       bondAnalysis: bond,
       progress: 0,
-      playbackStatus: nextSelection.length >= 2 || scenario ? 'playing' : 'idle'
+      playbackStatus: nextSelection.length >= 2 ? 'playing' : 'idle'
     });
   },
 
-  deselectElement: (symbol: string) => {
-    const nextSelection = get().selectedElements.filter(e => e.symbol !== symbol);
+  deselectElement: (target: string | number) => {
+    const current = get().selectedElements;
+    let nextSelection: ElementData[];
+    if (typeof target === 'number') {
+      nextSelection = current.filter((_, idx) => idx !== target);
+    } else {
+      const idx = current.findIndex(e => e.symbol === target);
+      if (idx !== -1) {
+        nextSelection = [...current.slice(0, idx), ...current.slice(idx + 1)];
+      } else {
+        nextSelection = current;
+      }
+    }
+
+    const symbols = nextSelection.map(e => e.symbol);
+    const scenario = nextSelection.length >= 2 ? resolveScenario(symbols) : null;
+    const bond = nextSelection.length >= 2 ? resolveBond(nextSelection[0], nextSelection[1]) : null;
+
     set({
       selectedElements: nextSelection,
-      activeScenario: null,
-      bondAnalysis: null,
+      activeScenario: scenario,
+      bondAnalysis: bond,
       progress: 0,
-      playbackStatus: 'idle'
+      playbackStatus: nextSelection.length >= 2 ? 'playing' : 'idle'
     });
   },
 

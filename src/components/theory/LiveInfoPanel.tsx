@@ -2,6 +2,7 @@ import React from 'react';
 import { useSimulationStore } from '../../store/useSimulationStore';
 import { ElectronegativityBar } from './ElectronegativityBar';
 import { OctetStatusBadge } from './OctetStatusBadge';
+import { SingleElementDetail } from './SingleElementDetail';
 import { BookOpen, Info, CheckCircle, ArrowRight, Atom } from 'lucide-react';
 
 export const LiveInfoPanel: React.FC = () => {
@@ -17,6 +18,15 @@ export const LiveInfoPanel: React.FC = () => {
         <p className="text-xs text-slate-500 max-w-xs mt-1 font-sans">
           Sol tablodan atom seçildiğinde veya bir senaryo başlatıldığında, kimyasal bağ mekanizması ve oktet kuralları burada adım adım senkronize olarak açıklanacaktır.
         </p>
+      </div>
+    );
+  }
+
+  // If exactly 1 element is selected and no reaction scenario has formed yet:
+  if (!activeScenario && selectedElements.length === 1) {
+    return (
+      <div className="flex-1 bg-slate-900 border-t border-slate-700 flex flex-col overflow-y-auto p-4 gap-3 select-none">
+        <SingleElementDetail element={selectedElements[0]} />
       </div>
     );
   }
