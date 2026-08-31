@@ -122,24 +122,35 @@ export function drawIonBadge(
 ) {
   ctx.save();
 
-  const width = badgeText.length > 2 ? 38 : 30;
+  // Set font for precise width measurement
+  ctx.font = '600 12px "JetBrains Mono", monospace';
+  const textWidth = ctx.measureText(badgeText).width;
+  const paddingX = 12;
+  const width = Math.max(38, Math.ceil(textWidth + paddingX * 2));
   const height = 24;
-  const bx = x - width / 2;
-  const by = y - height / 2;
+  const bx = Math.round(x - width / 2);
+  const by = Math.round(y - height / 2);
+
+  // Palette colors based on type (Sharp scientific pill design)
+  const theme = {
+    cation: { bg: '#221518', border: '#E06C75', text: '#F8FAFC' },
+    anion: { bg: '#111E2E', border: '#4FA6E0', text: '#F8FAFC' },
+    partial: { bg: '#211D15', border: '#E5C07B', text: '#F8FAFC' },
+  }[type];
 
   // Badge background container
-  ctx.fillStyle = type === 'cation' ? '#E06C75' : type === 'anion' ? '#4FA6E0' : '#E5C07B';
+  ctx.fillStyle = theme.bg;
   ctx.beginPath();
   ctx.roundRect(bx, by, width, height, 4);
   ctx.fill();
 
-  ctx.strokeStyle = '#0B0F17';
+  // 1px sharp border
+  ctx.strokeStyle = theme.border;
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
   // Badge text
-  ctx.fillStyle = '#0B0F17';
-  ctx.font = 'bold 12px "JetBrains Mono", monospace';
+  ctx.fillStyle = theme.text;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(badgeText, x, y + 1);

@@ -255,8 +255,8 @@ function renderNaClScenario(
 
   // Once transferred (t >= 0.75): Show Cation and Anion badges, draw ionic attraction line
   if (isTransferred) {
-    drawIonBadge(ctx, naX, naY - 60, 'Na⁺ (+1)', 'cation');
-    drawIonBadge(ctx, clX, clY - 60, 'Cl⁻ (-1)', 'anion');
+    drawIonBadge(ctx, naX, cy - 88, 'Na⁺ (+1)', 'cation');
+    drawIonBadge(ctx, clX, cy - 102, 'Cl⁻ (-1)', 'anion');
 
     // 400ms flash effect on bond creation
     const flashT = Math.max(0, Math.min(1, (t - 0.75) / 0.25));
@@ -312,9 +312,9 @@ function renderH2OScenario(
     drawBondLine(ctx, h2X, h2Y, oX, oY, overlapT, 'covalent');
 
     // Partial charge badges (Polar covalent: δ- on Oxygen, δ+ on Hydrogens)
-    drawIonBadge(ctx, oX + 45, oY, 'δ⁻ (O)', 'anion');
-    drawIonBadge(ctx, h1X - 35, h1Y - 15, 'δ⁺ (H)', 'cation');
-    drawIonBadge(ctx, h2X - 35, h2Y + 15, 'δ⁺ (H)', 'cation');
+    drawIonBadge(ctx, oX + 54, oY, 'δ⁻ (O)', 'anion');
+    drawIonBadge(ctx, h1X - 44, h1Y - 20, 'δ⁺ (H)', 'cation');
+    drawIonBadge(ctx, h2X - 44, h2Y + 20, 'δ⁺ (H)', 'cation');
   }
 }
 
@@ -352,7 +352,7 @@ function renderO2Scenario(
     drawBondLine(ctx, o1X, oY, o2X, oY, flashT, 'double-covalent');
 
     // Symmetrical overlap indicator
-    drawIonBadge(ctx, cx, cy - 65, 'O = O (Apolar İkili Bağ)', 'partial');
+    drawIonBadge(ctx, cx, cy - 78, 'O = O (Apolar İkili Bağ)', 'partial');
   }
 }
 
