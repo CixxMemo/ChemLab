@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useUIStore } from '../../store/useUIStore';
 
 export const CATEGORIES = [
   { id: 'alkali', nameTR: 'Alkali Metaller', color: '#E06C75' },
@@ -14,7 +14,7 @@ export const CATEGORIES = [
 ];
 
 export const CategoryLegend: React.FC = () => {
-  const { filterCategory, setFilterCategory } = useSimulationStore();
+  const { filterCategory, setFilterCategory } = useUIStore();
 
   return (
     <div className="flex flex-wrap items-center gap-1.5 py-1.5 px-3 bg-slate-900/60 border-b border-slate-700/80 select-none text-[11px]">

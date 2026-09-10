@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
-import { renderScene } from '../../lib/canvas/animationPhysics';
+import { useUIStore } from '../../store/useUIStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
+import { useCanvasRenderer } from '../../lib/canvas/useCanvasRenderer';
 import { OctetStatusBadge } from '../theory/OctetStatusBadge';
 import {
   X,
@@ -17,11 +18,9 @@ import {
 } from 'lucide-react';
 
 export const SimulationModal: React.FC = () => {
+  const { isAnimationModalOpen, closeAnimationModal } = useUIStore();
   const {
-    isAnimationModalOpen,
-    closeAnimationModal,
     activeScenario,
-    elements,
     selectedElements,
     scenarios,
     loadScenarioById,
@@ -34,121 +33,17 @@ export const SimulationModal: React.FC = () => {
     playbackSpeed,
     setPlaybackSpeed,
     bondAnalysis
-  } = useSimulationStore();
+  } = useChemistryStore();
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const progressRef = useRef(progress);
-  const playbackStatusRef = useRef(playbackStatus);
-  const playbackSpeedRef = useRef(playbackSpeed);
-
-  useEffect(() => {
-    progressRef.current = progress;
-  }, [progress]);
-
-  useEffect(() => {
-    playbackStatusRef.current = playbackStatus;
-  }, [playbackStatus]);
-
-  useEffect(() => {
-    playbackSpeedRef.current = playbackSpeed;
-  }, [playbackSpeed]);
-
-  // Keyboard shortcut: Escape to close modal
-  useEffect(() => {
-    if (!isAnimationModalOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeAnimationModal();
-      } else if (e.key === ' ' && (e.target as HTMLElement)?.tagName !== 'INPUT') {
-        e.preventDefault();
-        togglePlay();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAnimationModalOpen, closeAnimationModal, playbackStatus, progress]);
-
-  // Canvas animation loop inside modal
-  useEffect(() => {
-    if (!isAnimationModalOpen) return;
-
-    const canvas = canvasRef.current;
-    const container = containerRef.current;
-    if (!canvas || !container) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let rotationAngle = 0;
-    let lastTimestamp = performance.now();
-
-    const handleResize = () => {
-      const rect = container.getBoundingClientRect();
-      const scale = window.devicePixelRatio || 1;
-
-      canvas.width = Math.floor(rect.width * scale);
-      canvas.height = Math.floor(rect.height * scale);
-      canvas.style.width = `${rect.width}px`;
-      canvas.style.height = `${rect.height}px`;
-
-      ctx.resetTransform?.();
-      ctx.scale(scale, scale);
-    };
-
-    handleResize();
-    const resizeObserver = new ResizeObserver(handleResize);
-    resizeObserver.observe(container);
-
-    const loop = (currentTimestamp: number) => {
-      const deltaSec = (currentTimestamp - lastTimestamp) / 1000;
-      lastTimestamp = currentTimestamp;
-
-      // Update rotation angle for Bohr orbits
-      rotationAngle += deltaSec * 1.5;
-
-      // If playing, advance timeline progress
-      if (playbackStatusRef.current === 'playing') {
-        const totalDuration = 4.0 / playbackSpeedRef.current;
-        const nextProgress = progressRef.current + deltaSec / totalDuration;
-
-        if (nextProgress >= 1) {
-          setProgress(1);
-          setPlaybackStatus('completed');
-        } else {
-          setProgress(nextProgress);
-        }
-      }
-
-      const rect = container.getBoundingClientRect();
-
-      renderScene(ctx, rect.width, rect.height, {
-        progress: progressRef.current,
-        rotation: rotationAngle,
-        flashProgress: 0,
-        scenario: activeScenario,
-        elementsMap: elements,
-        selectedElements: selectedElements
-      });
-
-      animationFrameId = requestAnimationFrame(loop);
-    };
-
-    animationFrameId = requestAnimationFrame(loop);
-
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      resizeObserver.disconnect();
-    };
-  }, [isAnimationModalOpen, activeScenario, elements, selectedElements, setProgress, setPlaybackStatus]);
-
-  if (!isAnimationModalOpen) {
-    return null;
-  }
+  // Reusable canvas renderer hook with DIP abstraction
+  useCanvasRenderer({
+    canvasRef,
+    containerRef,
+    active: isAnimationModalOpen
+  });
 
   const isPlayable = selectedElements.length > 0 || activeScenario !== null;
 
@@ -163,6 +58,27 @@ export const SimulationModal: React.FC = () => {
       setPlaybackStatus('playing');
     }
   };
+
+  // Keyboard shortcut: Escape to close modal, Space to toggle play
+  useEffect(() => {
+    if (!isAnimationModalOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeAnimationModal();
+      } else if (e.key === ' ' && (e.target as HTMLElement)?.tagName !== 'INPUT') {
+        e.preventDefault();
+        togglePlay();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAnimationModalOpen, closeAnimationModal, playbackStatus, progress, isPlayable]);
+
+  if (!isAnimationModalOpen) {
+    return null;
+  }
 
   const isSingleElement = selectedElements.length === 1 && !activeScenario;
   const singleElement = isSingleElement ? selectedElements[0] : null;

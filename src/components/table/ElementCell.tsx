@@ -1,6 +1,7 @@
 import React from 'react';
 import { ElementData } from '../../types/chemistry';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useUIStore } from '../../store/useUIStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { CATEGORY_COLORS } from '../../lib/canvas/atomRenderer';
 
 interface ElementCellProps {
@@ -10,7 +11,8 @@ interface ElementCellProps {
 }
 
 export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gridColumnStart }) => {
-  const { selectedElements, selectElement, hoveredElement, setHoveredElement, viewMode } = useSimulationStore();
+  const { viewMode } = useUIStore();
+  const { selectedElements, selectElement, hoveredElement, setHoveredElement } = useChemistryStore();
 
   const isSelected = selectedElements.some(e => e.symbol === element.symbol);
   const isHovered = hoveredElement?.symbol === element.symbol;

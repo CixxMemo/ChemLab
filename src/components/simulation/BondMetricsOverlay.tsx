@@ -1,9 +1,11 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useUIStore } from '../../store/useUIStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { Activity, ShieldCheck, Zap, Maximize2 } from 'lucide-react';
 
 export const BondMetricsOverlay: React.FC = () => {
-  const { activeScenario, bondAnalysis, selectedElements, openAnimationModal } = useSimulationStore();
+  const { openAnimationModal } = useUIStore();
+  const { activeScenario, bondAnalysis, selectedElements } = useChemistryStore();
 
   const isSingleElement = selectedElements.length === 1 && !activeScenario;
   const singleElement = isSingleElement ? selectedElements[0] : null;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { Play, Pause, SkipBack, SkipForward, RotateCcw } from 'lucide-react';
 
 export const PlaybackControls: React.FC = () => {
@@ -14,7 +14,7 @@ export const PlaybackControls: React.FC = () => {
     setPlaybackSpeed,
     activeScenario,
     selectedElements
-  } = useSimulationStore();
+  } = useChemistryStore();
 
   const isPlayable = selectedElements.length > 0 || activeScenario !== null;
 

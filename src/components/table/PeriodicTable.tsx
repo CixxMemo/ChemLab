@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useUIStore } from '../../store/useUIStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { ElementCell } from './ElementCell';
 import { FilterBar } from './FilterBar';
 import { CategoryLegend } from './CategoryLegend';
 import { ElementData } from '../../types/chemistry';
 
 export const PeriodicTable: React.FC = () => {
-  const { elements, filterCategory, setFilterCategory, hoveredElement } = useSimulationStore();
+  const { filterCategory, setFilterCategory } = useUIStore();
+  const { elements, hoveredElement } = useChemistryStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   const elementsList = useMemo(() => Object.values(elements), [elements]);

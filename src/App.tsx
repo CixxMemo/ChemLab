@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { AppLayout } from './components/layout/AppLayout';
-import { useSimulationStore } from './store/useSimulationStore';
+import { useChemistryStore } from './store/useChemistryStore';
 
 export const App: React.FC = () => {
-  const { loadScenarioById } = useSimulationStore();
+  const { loadScenarioById } = useChemistryStore();
 
   // Load default scenario (NaCl) on first startup for immediate visual feedback
   useEffect(() => {

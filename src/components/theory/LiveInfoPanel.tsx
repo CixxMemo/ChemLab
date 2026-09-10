@@ -1,12 +1,12 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { ElectronegativityBar } from './ElectronegativityBar';
 import { OctetStatusBadge } from './OctetStatusBadge';
 import { SingleElementDetail } from './SingleElementDetail';
 import { BookOpen, Info, CheckCircle, ArrowRight, Atom } from 'lucide-react';
 
 export const LiveInfoPanel: React.FC = () => {
-  const { activeScenario, bondAnalysis, selectedElements, progress } = useSimulationStore();
+  const { activeScenario, bondAnalysis, selectedElements, progress } = useChemistryStore();
 
   if (!activeScenario && selectedElements.length === 0) {
     return (

@@ -1,15 +1,15 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useUIStore } from '../../store/useUIStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { FlaskConical, Sparkles, Layers } from 'lucide-react';
 
 export const Header: React.FC = () => {
+  const { viewMode, setViewMode } = useUIStore();
   const {
     scenarios,
     activeScenario,
-    loadScenarioById,
-    viewMode,
-    setViewMode
-  } = useSimulationStore();
+    loadScenarioById
+  } = useChemistryStore();
 
   return (
     <header className="h-14 bg-slate-900 border-b border-slate-700 px-4 flex items-center justify-between select-none z-10">

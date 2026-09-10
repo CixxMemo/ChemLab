@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSimulationStore } from '../../store/useSimulationStore';
+import { useChemistryStore } from '../../store/useChemistryStore';
 import { Search, X, CheckCircle2 } from 'lucide-react';
 
 interface FilterBarProps {
@@ -8,7 +8,7 @@ interface FilterBarProps {
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuery }) => {
-  const { selectedElements, deselectElement, activeScenario } = useSimulationStore();
+  const { selectedElements, deselectElement, activeScenario } = useChemistryStore();
 
   return (
     <div className="flex items-center justify-between gap-3 px-3 py-2 bg-slate-900 border-b border-slate-700 select-none">
