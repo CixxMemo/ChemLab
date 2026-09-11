@@ -1,11 +1,11 @@
 import React from 'react';
-import { ElementData } from '../../types/chemistry';
+import { IElementInfo } from '../../types/chemistry';
 import { useUIStore } from '../../store/useUIStore';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { CATEGORY_COLORS } from '../../lib/canvas/atomRenderer';
 
 interface ElementCellProps {
-  element: ElementData;
+  element: IElementInfo;
   isDimmed?: boolean;
   gridColumnStart?: number;
 }

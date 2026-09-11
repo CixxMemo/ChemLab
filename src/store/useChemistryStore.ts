@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import rawElements from '../data/elements.json';
-import { ElementData, ReactionScenario, BondAnalysis, PlaybackStatus } from '../types/chemistry';
+import { ElementData, ReactionScenario, BondAnalysis, PlaybackStatus, IElementInfo } from '../types/chemistry';
 import { resolveBond } from '../lib/chemistry/bondResolver';
 import { resolveScenario, getAllScenarios } from '../lib/chemistry/stoichiometry';
 
@@ -23,9 +23,9 @@ export interface ChemistryState {
   playbackSpeed: number; // 0.5, 1.0, 2.0
 
   // Actions
-  selectElement: (element: ElementData) => void;
+  selectElement: (element: ElementData | IElementInfo) => void;
   deselectElement: (target: string | number) => void;
-  setHoveredElement: (element: ElementData | null) => void;
+  setHoveredElement: (element: ElementData | IElementInfo | null) => void;
   loadScenarioById: (scenarioId: string) => void;
   setPlaybackStatus: (status: PlaybackStatus) => void;
   setProgress: (progress: number) => void;
@@ -48,16 +48,17 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
   progress: 0,
   playbackSpeed: 1,
 
-  selectElement: (element: ElementData) => {
+  selectElement: (element: ElementData | IElementInfo) => {
+    const fullElement = (get().elements[element.atomicNumber.toString()] || element) as ElementData;
     const current = get().selectedElements;
 
     let nextSelection: ElementData[];
     if (current.length === 0) {
-      nextSelection = [element];
+      nextSelection = [fullElement];
     } else if (current.length === 1) {
-      nextSelection = [...current, element];
+      nextSelection = [...current, fullElement];
     } else {
-      nextSelection = [element];
+      nextSelection = [fullElement];
     }
 
     const symbols = nextSelection.map(e => e.symbol);
@@ -104,7 +105,10 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
     });
   },
 
-  setHoveredElement: (element) => set({ hoveredElement: element }),
+  setHoveredElement: (element) => {
+    const resolved = element ? ((get().elements[element.atomicNumber.toString()] || element) as ElementData) : null;
+    set({ hoveredElement: resolved });
+  },
 
   loadScenarioById: (scenarioId: string) => {
     const scenarios = get().scenarios;

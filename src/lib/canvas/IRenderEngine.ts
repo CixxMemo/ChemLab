@@ -1,12 +1,12 @@
-import { ElementData, ReactionScenario } from '../../types/chemistry';
+import { IAtomRenderData, ReactionScenario } from '../../types/chemistry';
 
 export interface RenderState {
   progress: number; // 0.0 to 1.0
   rotation: number; // continuous orbit rotation angle in radians
   flashProgress: number; // 0.0 to 1.0 for bond flash effects
   scenario: ReactionScenario | null;
-  elementsMap: Record<string, ElementData>;
-  selectedElements: ElementData[];
+  elementsMap: Record<string, IAtomRenderData>;
+  selectedElements: IAtomRenderData[];
 }
 
 /**

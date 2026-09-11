@@ -10,7 +10,46 @@ export type ElementCategory =
   | 'lanthanide'
   | 'actinide';
 
-export interface ElementData {
+/**
+ * Segregated interface for table cells, filter listings, and search indexers.
+ * (ISP - Interface Segregation Principle)
+ */
+export interface IElementInfo {
+  atomicNumber: number;
+  symbol: string;
+  nameTR: string;
+  category: ElementCategory;
+  electronegativity: number | null;
+  name?: string;
+  nameEN?: string;
+}
+
+/**
+ * Segregated interface for Canvas Bohr orbit and Nucleus rendering.
+ * (ISP - Interface Segregation Principle)
+ */
+export interface IAtomRenderData {
+  atomicNumber: number;
+  symbol: string;
+  category: ElementCategory;
+  shells: number[];
+  valanceElectrons: number | null;
+  electronegativity?: number | null;
+}
+
+/**
+ * Segregated interface for Octet & Duplet electronic status tracking.
+ * (ISP - Interface Segregation Principle)
+ */
+export interface IOctetStatusData {
+  atomicNumber: number;
+  symbol: string;
+  nameTR: string;
+  category: ElementCategory;
+  valanceElectrons: number | null;
+}
+
+export interface ElementData extends IElementInfo, IAtomRenderData, IOctetStatusData {
   atomicNumber: number;
   symbol: string;
   nameTR: string;

@@ -1,4 +1,4 @@
-import { ElementData } from '../../types/chemistry';
+import { IAtomRenderData } from '../../types/chemistry';
 
 export const CATEGORY_COLORS: Record<string, string> = {
   alkali: '#E06C75',
@@ -16,7 +16,7 @@ export const CATEGORY_COLORS: Record<string, string> = {
 export interface AtomRenderOptions {
   x: number;
   y: number;
-  element: ElementData;
+  element: IAtomRenderData;
   scale?: number;
   shellRadiusBase?: number;
   valenceElectronsCount?: number;
@@ -32,7 +32,7 @@ export function drawNucleus(
   ctx: CanvasRenderingContext2D,
   x: number,
   y: number,
-  element: ElementData,
+  element: IAtomRenderData,
   radius: number = 26,
   opacity: number = 1
 ) {

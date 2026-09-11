@@ -1,9 +1,9 @@
 import React from 'react';
-import { ElementData } from '../../types/chemistry';
+import { IOctetStatusData } from '../../types/chemistry';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface OctetStatusBadgeProps {
-  element: ElementData;
+  element: IOctetStatusData;
   progress: number;
 }
 

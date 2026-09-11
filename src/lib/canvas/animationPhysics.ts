@@ -1,5 +1,5 @@
 import { easeInOutCubic, easeOutCubic, easeOutBack, lerp } from './easing';
-import { ElementData, ReactionScenario } from '../../types/chemistry';
+import { IAtomRenderData, ReactionScenario } from '../../types/chemistry';
 import { drawNucleus, drawBohrShells, drawIonBadge, drawBondLine } from './atomRenderer';
 
 export interface SceneState {
@@ -7,8 +7,8 @@ export interface SceneState {
   rotation: number; // continuously incrementing angle for electron orbits
   flashProgress: number; // for bond flash
   scenario: ReactionScenario | null;
-  elementsMap: Record<string, ElementData>;
-  selectedElements: ElementData[];
+  elementsMap: Record<string, IAtomRenderData>;
+  selectedElements: IAtomRenderData[];
 }
 
 export function renderScene(
@@ -117,7 +117,7 @@ function renderSingleElementScene(
   cx: number,
   cy: number,
   rotation: number,
-  element: ElementData,
+  element: IAtomRenderData,
   _width: number,
   height: number
 ) {
@@ -181,7 +181,7 @@ function renderNaClScenario(
   cy: number,
   t: number,
   rotation: number,
-  elementsMap: Record<string, ElementData>
+  elementsMap: Record<string, IAtomRenderData>
 ) {
   const na = elementsMap['11'] || { atomicNumber: 11, symbol: 'Na', nameTR: 'Sodyum', category: 'alkali', electronegativity: 0.93, shells: [2, 8, 1], valanceElectrons: 1 };
   const cl = elementsMap['17'] || { atomicNumber: 17, symbol: 'Cl', nameTR: 'Klor', category: 'halogen', electronegativity: 3.16, shells: [2, 8, 7], valanceElectrons: 7 };
@@ -209,11 +209,11 @@ function renderNaClScenario(
 
   // Draw Na shells and nucleus
   drawBohrShells(ctx, naX, naY, naShells, 38, 20, rotation);
-  drawNucleus(ctx, naX, naY, na as ElementData, 24);
+  drawNucleus(ctx, naX, naY, na as IAtomRenderData, 24);
 
   // Draw Cl shells and nucleus
   drawBohrShells(ctx, clX, clY, clShells, 38, 20, -rotation * 0.8);
-  drawNucleus(ctx, clX, clY, cl as ElementData, 24);
+  drawNucleus(ctx, clX, clY, cl as IAtomRenderData, 24);
 
   // Traveling Electron (easeInOutCubic trajectory)
   if (isTransferring) {
@@ -273,7 +273,7 @@ function renderH2OScenario(
   cy: number,
   t: number,
   rotation: number,
-  elementsMap: Record<string, ElementData>
+  elementsMap: Record<string, IAtomRenderData>
 ) {
   const o = elementsMap['8'] || { atomicNumber: 8, symbol: 'O', nameTR: 'Oksijen', category: 'nonmetal', electronegativity: 3.44, shells: [2, 6], valanceElectrons: 6 };
   const h = elementsMap['1'] || { atomicNumber: 1, symbol: 'H', nameTR: 'Hidrojen', category: 'nonmetal', electronegativity: 2.20, shells: [1], valanceElectrons: 1 };
@@ -295,15 +295,15 @@ function renderH2OScenario(
 
   // Draw Oxygen Bohr Model (central)
   drawBohrShells(ctx, oX, oY, [2, 6], 32, 22, rotation * 0.5);
-  drawNucleus(ctx, oX, oY, o as ElementData, 25);
+  drawNucleus(ctx, oX, oY, o as IAtomRenderData, 25);
 
   // Draw Hydrogen 1 Bohr Model
   drawBohrShells(ctx, h1X, h1Y, [1], 24, 0, rotation);
-  drawNucleus(ctx, h1X, h1Y, h as ElementData, 18);
+  drawNucleus(ctx, h1X, h1Y, h as IAtomRenderData, 18);
 
   // Draw Hydrogen 2 Bohr Model
   drawBohrShells(ctx, h2X, h2Y, [1], 24, 0, -rotation);
-  drawNucleus(ctx, h2X, h2Y, h as ElementData, 18);
+  drawNucleus(ctx, h2X, h2Y, h as IAtomRenderData, 18);
 
   // When shells overlap (t > 0.6)
   if (t > 0.6) {
@@ -327,7 +327,7 @@ function renderO2Scenario(
   cy: number,
   t: number,
   rotation: number,
-  elementsMap: Record<string, ElementData>
+  elementsMap: Record<string, IAtomRenderData>
 ) {
   const o = elementsMap['8'] || { atomicNumber: 8, symbol: 'O', nameTR: 'Oksijen', category: 'nonmetal', electronegativity: 3.44, shells: [2, 6], valanceElectrons: 6 };
 
@@ -341,10 +341,10 @@ function renderO2Scenario(
 
   // Draw shells and nuclei
   drawBohrShells(ctx, o1X, oY, [2, 6], 32, 22, rotation * 0.7);
-  drawNucleus(ctx, o1X, oY, o as ElementData, 25);
+  drawNucleus(ctx, o1X, oY, o as IAtomRenderData, 25);
 
   drawBohrShells(ctx, o2X, oY, [2, 6], 32, 22, -rotation * 0.7);
-  drawNucleus(ctx, o2X, oY, o as ElementData, 25);
+  drawNucleus(ctx, o2X, oY, o as IAtomRenderData, 25);
 
   // If connected, show double bond (4 shared electrons)
   if (t > 0.6) {
@@ -365,7 +365,7 @@ function renderCH4Scenario(
   cy: number,
   t: number,
   rotation: number,
-  elementsMap: Record<string, ElementData>
+  elementsMap: Record<string, IAtomRenderData>
 ) {
   const c = elementsMap['6'] || { atomicNumber: 6, symbol: 'C', nameTR: 'Karbon', category: 'nonmetal', electronegativity: 2.55, shells: [2, 4], valanceElectrons: 4 };
   const h = elementsMap['1'] || { atomicNumber: 1, symbol: 'H', nameTR: 'Hidrojen', category: 'nonmetal', electronegativity: 2.20, shells: [1], valanceElectrons: 1 };
@@ -376,7 +376,7 @@ function renderCH4Scenario(
 
   // Central Carbon
   drawBohrShells(ctx, cx, cy, [2, 4], 30, 22, rotation * 0.5);
-  drawNucleus(ctx, cx, cy, c as ElementData, 24);
+  drawNucleus(ctx, cx, cy, c as IAtomRenderData, 24);
 
   // 4 Hydrogens in cross formation
   const positions = [
@@ -388,7 +388,7 @@ function renderCH4Scenario(
 
   positions.forEach((pos, idx) => {
     drawBohrShells(ctx, pos.x, pos.y, [1], 20, 0, rotation * (idx % 2 === 0 ? 1 : -1));
-    drawNucleus(ctx, pos.x, pos.y, h as ElementData, 16);
+    drawNucleus(ctx, pos.x, pos.y, h as IAtomRenderData, 16);
 
     if (t > 0.6) {
       drawBondLine(ctx, cx, cy, pos.x, pos.y, (t - 0.6) / 0.4, 'covalent');
@@ -409,8 +409,8 @@ function renderInertScenario(
   cy: number,
   t: number,
   rotation: number,
-  selectedElements: ElementData[],
-  elementsMap: Record<string, ElementData>
+  selectedElements: IAtomRenderData[],
+  elementsMap: Record<string, IAtomRenderData>
 ) {
   const elemA = selectedElements[0] || elementsMap['2'] || { atomicNumber: 2, symbol: 'He', nameTR: 'Helyum', category: 'noble', electronegativity: null, shells: [2], valanceElectrons: 2 };
   const elemB = selectedElements[1] || elementsMap['10'] || { atomicNumber: 10, symbol: 'Ne', nameTR: 'Neon', category: 'noble', electronegativity: null, shells: [2, 8], valanceElectrons: 8 };
@@ -457,7 +457,7 @@ function renderGenericPairScenario(
   cy: number,
   t: number,
   rotation: number,
-  selectedElements: ElementData[]
+  selectedElements: IAtomRenderData[]
 ) {
   const elemA = selectedElements[0];
   const elemB = selectedElements[1] || selectedElements[0];

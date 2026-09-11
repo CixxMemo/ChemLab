@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { IRenderEngine } from './IRenderEngine';
 import { defaultBohrEngine } from './CanvasBohrEngine';
 import { useChemistryStore } from '../../store/useChemistryStore';
-import { ElementData, PlaybackStatus, ReactionScenario } from '../../types/chemistry';
+import { IAtomRenderData, PlaybackStatus, ReactionScenario } from '../../types/chemistry';
 
 export interface UseCanvasRendererOptions {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -12,8 +12,8 @@ export interface UseCanvasRendererOptions {
 
   // Optional manual overrides for dependency injection / headless testing
   scenario?: ReactionScenario | null;
-  elements?: Record<string, ElementData>;
-  selectedElements?: ElementData[];
+  elements?: Record<string, IAtomRenderData>;
+  selectedElements?: IAtomRenderData[];
   progress?: number;
   playbackStatus?: PlaybackStatus;
   playbackSpeed?: number;
