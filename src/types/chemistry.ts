@@ -44,8 +44,6 @@ export interface IAtomRenderData {
 export interface IOctetStatusData {
   atomicNumber: number;
   symbol: string;
-  nameTR: string;
-  category: ElementCategory;
   valanceElectrons: number | null;
 }
 

@@ -40,7 +40,7 @@ export function renderScene(
   }
 
   if (!scenario) {
-    renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements);
+    renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, null);
     return;
   }
 
@@ -61,7 +61,7 @@ export function renderScene(
       renderInertScenario(ctx, cx, cy, progress, rotation, selectedElements, elementsMap);
       break;
     default:
-      renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements);
+      renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, scenario);
       break;
   }
 }
@@ -457,7 +457,8 @@ function renderGenericPairScenario(
   cy: number,
   t: number,
   rotation: number,
-  selectedElements: IAtomRenderData[]
+  selectedElements: IAtomRenderData[],
+  scenario?: ReactionScenario | null
 ) {
   const elemA = selectedElements[0];
   const elemB = selectedElements[1] || selectedElements[0];
@@ -472,7 +473,28 @@ function renderGenericPairScenario(
   drawBohrShells(ctx, bx, cy, elemB.shells, 34, 20, -rotation);
   drawNucleus(ctx, bx, cy, elemB, 24);
 
-  if (t > 0.7) {
-    drawBondLine(ctx, ax, cy, bx, cy, (t - 0.7) / 0.3, 'covalent');
+  if (t > 0.65) {
+    const flash = (t - 0.65) / 0.35;
+    const isIonic = scenario?.bondType === 'ionic';
+    const isTriple = elemA.symbol === 'N' && elemB.symbol === 'N';
+
+    if (isIonic) {
+      const isAElectroNeg = (elemA.electronegativity ?? 0) >= (elemB.electronegativity ?? 0);
+      const donor = isAElectroNeg ? elemB : elemA;
+      const acceptor = isAElectroNeg ? elemA : elemB;
+      const donorX = isAElectroNeg ? bx : ax;
+      const acceptorX = isAElectroNeg ? ax : bx;
+
+      drawBondLine(ctx, ax, cy, bx, cy, flash, 'ionic');
+      drawIonBadge(ctx, donorX, cy - 80, `${donor.symbol}⁺`, 'cation');
+      drawIonBadge(ctx, acceptorX, cy - 80, `${acceptor.symbol}⁻`, 'anion');
+    } else if (isTriple) {
+      drawBondLine(ctx, ax, cy - 6, bx, cy - 6, flash, 'covalent');
+      drawBondLine(ctx, ax, cy, bx, cy, flash, 'covalent');
+      drawBondLine(ctx, ax, cy + 6, bx, cy + 6, flash, 'covalent');
+      drawIonBadge(ctx, cx, cy - 78, 'N ≡ N (Üçlü Apolar Bağ)', 'partial');
+    } else {
+      drawBondLine(ctx, ax, cy, bx, cy, flash, 'covalent');
+    }
   }
 }

@@ -8,8 +8,8 @@ interface OctetStatusBadgeProps {
 }
 
 export const OctetStatusBadge: React.FC<OctetStatusBadgeProps> = ({ element, progress }) => {
-  const isNoble = element.category === 'noble';
   const isDuplet = element.atomicNumber <= 2;
+  const isNoble = element.atomicNumber === 2 || element.valanceElectrons === 8;
   const targetValence = isDuplet ? 2 : 8;
 
   // Initial valence before bonding
@@ -26,7 +26,7 @@ export const OctetStatusBadge: React.FC<OctetStatusBadgeProps> = ({ element, pro
         </span>
         <div className="flex flex-col">
           <span className="font-sans font-semibold text-slate-100 text-xs">
-            {element.nameTR}
+            {element.symbol} Atomu
           </span>
           <span className="text-[10px] text-slate-400">
             Dış Katman: {isCompleted ? targetValence : (initialValence ?? '-')} / {targetValence} e⁻

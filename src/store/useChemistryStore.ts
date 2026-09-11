@@ -23,9 +23,9 @@ export interface ChemistryState {
   playbackSpeed: number; // 0.5, 1.0, 2.0
 
   // Actions
-  selectElement: (element: ElementData | IElementInfo) => void;
+  selectElement: (element: IElementInfo) => void;
   deselectElement: (target: string | number) => void;
-  setHoveredElement: (element: ElementData | IElementInfo | null) => void;
+  setHoveredElement: (element: IElementInfo | null) => void;
   loadScenarioById: (scenarioId: string) => void;
   setPlaybackStatus: (status: PlaybackStatus) => void;
   setProgress: (progress: number) => void;
@@ -48,7 +48,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
   progress: 0,
   playbackSpeed: 1,
 
-  selectElement: (element: ElementData | IElementInfo) => {
+  selectElement: (element: IElementInfo) => {
     const fullElement = (get().elements[element.atomicNumber.toString()] || element) as ElementData;
     const current = get().selectedElements;
 
