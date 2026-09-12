@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { useCanvasRenderer } from '../../lib/canvas/useCanvasRenderer';
 import { BondMetricsOverlay } from './BondMetricsOverlay';
+import { CompoundProductBadge } from './CompoundProductBadge';
 
 export const SimulationCanvas: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -15,6 +16,7 @@ export const SimulationCanvas: React.FC = () => {
   return (
     <div ref={containerRef} className="relative flex-1 w-full h-full bg-slate-950 overflow-hidden select-none">
       <SimulationCanvasOverlay />
+      <CompoundProductBadge />
       <canvas
         ref={canvasRef}
         className="w-full h-full block cursor-crosshair"
