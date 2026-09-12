@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useUIStore } from '../../store/useUIStore';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { useCanvasRenderer } from '../../lib/canvas/useCanvasRenderer';
+import { CanvasBohrEngine } from '../../lib/canvas/CanvasBohrEngine';
 import { OctetStatusBadge } from '../theory/OctetStatusBadge';
 import {
   X,
@@ -38,11 +39,17 @@ export const SimulationModal: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
+  const modalEngineRef = useRef<CanvasBohrEngine | null>(null);
+  if (!modalEngineRef.current) {
+    modalEngineRef.current = new CanvasBohrEngine();
+  }
+
   // Reusable canvas renderer hook with DIP abstraction
   useCanvasRenderer({
     canvasRef,
     containerRef,
-    active: isAnimationModalOpen
+    active: isAnimationModalOpen,
+    engine: modalEngineRef.current
   });
 
   const isPlayable = selectedElements.length > 0 || activeScenario !== null;

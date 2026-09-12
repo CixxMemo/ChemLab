@@ -396,7 +396,8 @@ function renderCH4Scenario(
   });
 
   if (t > 0.7) {
-    drawIonBadge(ctx, cx, cy - 110, 'CH₄ (4 Apolar Tekli Kovalent Bağ)', 'partial');
+    const CH4_BADGE_CLEARANCE = 45; // px above the resting position of the top hydrogen
+    drawIonBadge(ctx, cx, cy - finalDist - CH4_BADGE_CLEARANCE, 'CH₄ (4 Apolar Tekli Kovalent Bağ)', 'partial');
   }
 }
 
