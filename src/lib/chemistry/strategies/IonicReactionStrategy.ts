@@ -4,11 +4,11 @@ import rawReactions from '../../../data/reactions.json';
 
 const reactions = rawReactions as ReactionScenario[];
 
-function gcd(a: number, b: number): number {
+export function gcd(a: number, b: number): number {
   return b === 0 ? a : gcd(b, a % b);
 }
 
-function calculateIonicRatio(donor: ElementData, acceptor: ElementData): FormulaRatio {
+export function calculateIonicRatio(donor: ElementData, acceptor: ElementData): FormulaRatio {
   const q1 = donor.valanceElectrons ?? 1;
   const q2 = acceptor.valanceElectrons ? (8 - acceptor.valanceElectrons) : 1;
 
@@ -30,6 +30,10 @@ function calculateIonicRatio(donor: ElementData, acceptor: ElementData): Formula
 export class IonicReactionStrategy implements IReactionStrategy {
   public readonly id = 'ionic';
   public readonly name = 'İyonik Bağ Reaksiyonu';
+
+  public static calculateIonicRatio(donor: ElementData, acceptor: ElementData): FormulaRatio {
+    return calculateIonicRatio(donor, acceptor);
+  }
 
   public supports(context: ReactionContext): boolean {
     const { deltaEN, isNobleInvolved } = context;

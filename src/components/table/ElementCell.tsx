@@ -32,6 +32,8 @@ export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gri
 
   return (
     <button
+      id={`element-cell-${element.symbol.toLowerCase()}`}
+      data-symbol={element.symbol}
       onClick={() => selectElement(element)}
       onMouseEnter={() => setHoveredElement(element)}
       onMouseLeave={() => setHoveredElement(null)}

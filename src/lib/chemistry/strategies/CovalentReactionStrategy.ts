@@ -1,5 +1,6 @@
 import { IReactionStrategy, ReactionContext, ReactionResolution } from './IReactionStrategy';
 import { BondType, ReactionScenario } from '../../../types/chemistry';
+import { checkOctetSatisfaction } from '../octetChecker';
 import rawReactions from '../../../data/reactions.json';
 
 const reactions = rawReactions as ReactionScenario[];
@@ -24,13 +25,15 @@ export class CovalentReactionStrategy implements IReactionStrategy {
     const bVal = secondaryAtom.valanceElectrons ?? 4;
     const isSameElement = primaryAtom.symbol === secondaryAtom.symbol;
 
-    // Determine shared electron pairs: for identical O=O -> 2 pairs, N=N -> 3 pairs, otherwise default min
-    let sharedElectronPairs = Math.min(aVal, bVal, 2);
-    if (isSameElement && primaryAtom.symbol === 'O') {
-      sharedElectronPairs = 2; // double bond
-    } else if (isSameElement && primaryAtom.symbol === 'N') {
-      sharedElectronPairs = 3; // triple bond
-    }
+    const octetA = checkOctetSatisfaction(primaryAtom, aVal);
+    const octetB = checkOctetSatisfaction(secondaryAtom, bVal);
+
+    // Generic octet completion derivation:
+    // For same-element diatomic bonds, octetA.remainingNeeded === octetB.remainingNeeded (H:1, O:2, N:3, Cl/F/Br:1)
+    // For heteronuclear pairs, shared pairs are derived from the minimum electrons needed by either partner
+    const sharedElectronPairs = isSameElement
+      ? octetA.remainingNeeded
+      : Math.min(octetA.remainingNeeded, octetB.remainingNeeded);
 
     let explanationTR: string;
     if (isPolar) {

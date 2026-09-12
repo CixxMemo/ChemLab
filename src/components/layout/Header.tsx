@@ -43,6 +43,7 @@ export const Header: React.FC = () => {
           const isActive = activeScenario?.id === sc.id;
           return (
             <button
+              id={`scenario-btn-${sc.id}`}
               key={sc.id}
               onClick={() => loadScenarioById(sc.id)}
               className={`h-8 px-2.5 rounded font-mono text-xs font-semibold transition-colors flex items-center justify-center touch-target ${
