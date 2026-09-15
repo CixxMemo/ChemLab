@@ -1,6 +1,6 @@
 # ChemLab — Chemistry Domain Rules
 
-**Purpose:** This file complements `agents.md` (engineering rules) and `MVP_development_plan.md`. It is the single source of chemistry truth for everything under `/lib/chemistry/`. Treat every number here as fixed — do not let a coding agent estimate, round, or invent electronegativity, shell, or valence values; copy them from the tables below.
+**Purpose:** This file complements `agents.md` (engineering rules) and `MVP_DEVELOPMENT_PLAN.md`. It is the single source of chemistry truth for everything under `/lib/chemistry/`. Treat every number here as fixed — do not let a coding agent estimate, round, or invent electronegativity, shell, or valence values; copy them from the tables below.
 
 ---
 
