@@ -21,13 +21,17 @@ export const SimulationCanvas: React.FC = () => {
   });
 
   return (
-    <div ref={containerRef} className="relative flex-1 w-full h-full bg-slate-950 overflow-hidden select-none">
-      <SimulationCanvasOverlay />
+    <div className="flex flex-1 flex-col w-full h-full min-h-0 bg-slate-950 select-none">
+      <div ref={containerRef} className="relative flex-1 min-h-0 w-full overflow-hidden">
+        <SimulationCanvasOverlay />
+        <canvas
+          ref={canvasRef}
+          className="w-full h-full block cursor-crosshair"
+        />
+      </div>
+
+      {/* Keep reaction details outside the drawing surface so atoms remain unobstructed. */}
       <CompoundProductBadge />
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full block cursor-crosshair"
-      />
     </div>
   );
 };

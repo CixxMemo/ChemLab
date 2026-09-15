@@ -397,7 +397,13 @@ function renderCH4Scenario(
 
   if (t > 0.7) {
     const CH4_BADGE_CLEARANCE = 45; // px above the resting position of the top hydrogen
-    drawIonBadge(ctx, cx, cy - finalDist - CH4_BADGE_CLEARANCE, 'CH₄ (4 Apolar Tekli Kovalent Bağ)', 'partial');
+    const COMPACT_CANVAS_TOP_OVERLAY_CLEARANCE = 64; // px reserved for the metrics overlay at the top of the canvas
+    const preferredBadgeY = cy - finalDist - CH4_BADGE_CLEARANCE;
+    const badgeY = preferredBadgeY >= COMPACT_CANVAS_TOP_OVERLAY_CLEARANCE
+      ? preferredBadgeY
+      : cy + finalDist + CH4_BADGE_CLEARANCE;
+
+    drawIonBadge(ctx, cx, badgeY, 'CH₄ (4 Apolar Tekli Kovalent Bağ)', 'partial');
   }
 }
 

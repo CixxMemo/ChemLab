@@ -6,7 +6,8 @@ import { FlaskConical, Ban, CheckCircle2 } from 'lucide-react';
 /**
  * Presenter Component (SRP):
  * Displays the chemical reaction equation, synthesized compound product formula,
- * Turkish compound nomenclature, and bond classification badge in the bottom-left of the canvas.
+ * Turkish compound nomenclature, and bond classification in a shared information rail.
+ * The rail stays in document flow so it never covers atoms on compact canvases.
  */
 export const CompoundProductBadge: React.FC = () => {
   const { activeScenario, bondAnalysis, selectedElements } = useChemistryStore();
@@ -28,31 +29,29 @@ export const CompoundProductBadge: React.FC = () => {
 
   return (
     <div
-      id="compound-product-badge"
-      className="absolute bottom-4 left-4 z-20 pointer-events-none select-none transition-all duration-300"
+      className="relative z-20 flex-shrink-0 border-t border-slate-700 bg-slate-900 px-3 py-2 select-none"
+      aria-label={`${equation}, ${compoundNameTR}`}
     >
-      <div className="backdrop-blur-md bg-slate-950/85 border border-cyan-500/30 rounded-xl px-4 py-3 shadow-xl flex flex-col gap-2 min-w-[220px] max-w-[320px]">
-        {/* Header: Status / Bond Type Tag */}
-        <div className="flex items-center justify-between gap-2 border-b border-slate-800/80 pb-1.5">
-          <div className="flex items-center gap-1.5 text-slate-400">
-            {isInert ? (
-              <Ban className="w-3.5 h-3.5 text-rose-400" />
-            ) : (
-              <FlaskConical className="w-3.5 h-3.5 text-cyan-400" />
-            )}
-            <span className="text-[10px] font-mono uppercase tracking-wider font-semibold">
-              {isInert ? 'Tepkime Durumu' : 'Tepkime & Ürün'}
-            </span>
-          </div>
-
-          <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${badgeColor}`}>
-            {bondTag}
+      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1">
+        {/* Header: Status */}
+        <div className="flex min-w-0 items-center gap-1.5 text-slate-400">
+          {isInert ? (
+            <Ban className="w-3.5 h-3.5 flex-shrink-0 text-rose-400" />
+          ) : (
+            <FlaskConical className="w-3.5 h-3.5 flex-shrink-0 text-cyan-400" />
+          )}
+          <span className="truncate text-[10px] font-mono uppercase tracking-wider font-semibold">
+            {isInert ? 'Tepkime Durumu' : 'Tepkime & Ürün'}
           </span>
         </div>
 
-        {/* Hero: Reaction Equation & Product Formula */}
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="font-mono font-bold text-base sm:text-lg text-slate-50 tracking-wide">
+        <span className={`max-w-[190px] truncate px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${badgeColor}`}>
+          {bondTag}
+        </span>
+
+        {/* Reaction equation */}
+        <div className="flex min-w-0 items-baseline gap-2">
+          <span className="truncate font-mono font-bold text-base text-slate-50 tracking-wide">
             {equation}
           </span>
           {productFormula ? (
@@ -62,10 +61,10 @@ export const CompoundProductBadge: React.FC = () => {
           ) : null}
         </div>
 
-        {/* Footer: Turkish Compound Name */}
-        <div className="flex items-center gap-1.5 text-xs">
+        {/* Turkish compound name */}
+        <div className="flex min-w-0 items-center justify-end gap-1.5 text-xs">
           {!isInert && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />}
-          <span className={`font-medium truncate ${isInert ? 'text-rose-300/90' : 'text-slate-200'}`}>
+          <span className={`truncate font-medium ${isInert ? 'text-rose-300/90' : 'text-slate-200'}`}>
             {compoundNameTR}
           </span>
         </div>

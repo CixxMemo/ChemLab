@@ -4,6 +4,7 @@ import { useChemistryStore } from '../../store/useChemistryStore';
 import { useCanvasRenderer } from '../../lib/canvas/useCanvasRenderer';
 import { CanvasBohrEngine } from '../../lib/canvas/CanvasBohrEngine';
 import { OctetStatusBadge } from '../theory/OctetStatusBadge';
+import { CompoundProductBadge } from './CompoundProductBadge';
 import {
   X,
   Play,
@@ -284,6 +285,9 @@ export const SimulationModal: React.FC = () => {
             className="w-full h-full block cursor-crosshair"
           />
         </div>
+
+        {/* Reuse the same unobstructed reaction identity shown in the main simulator. */}
+        <CompoundProductBadge />
 
         {/* Modal Bottom Playback Controls Bar */}
         <div className="bg-slate-900 border-t border-slate-700 px-4 md:px-6 py-3 flex flex-col gap-2.5 flex-shrink-0">
