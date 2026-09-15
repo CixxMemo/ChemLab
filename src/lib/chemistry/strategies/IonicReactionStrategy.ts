@@ -1,30 +1,153 @@
 import { IReactionStrategy, ReactionContext, ReactionResolution } from './IReactionStrategy';
-import { ElementData, FormulaRatio, ReactionScenario } from '../../../types/chemistry';
+import {
+  ElementData,
+  FormulaRatio,
+  OctetStatus,
+  ReactionScenario,
+  ReactionStep
+} from '../../../types/chemistry';
+import {
+  createOctetStatus,
+  isMetalNonMetalPair,
+  isNonMetalPair
+} from '../reactionDomain';
 import rawReactions from '../../../data/reactions.json';
 
 const reactions = rawReactions as ReactionScenario[];
+const IONIC_THRESHOLD = 1.7;
+
+interface IonicTransfer {
+  transferredElectrons: number;
+  cationCharge: number;
+  anionCharge: number;
+}
 
 export function gcd(a: number, b: number): number {
   return b === 0 ? a : gcd(b, a % b);
 }
 
 export function calculateIonicRatio(donor: ElementData, acceptor: ElementData): FormulaRatio {
-  const q1 = donor.valanceElectrons ?? 1;
-  const q2 = acceptor.valanceElectrons ? (8 - acceptor.valanceElectrons) : 1;
-
-  const divisor = gcd(q1, q2);
-  const donorCount = q2 / divisor;
-  const acceptorCount = q1 / divisor;
-
-  const dSub = donorCount > 1 ? donorCount.toString() : '';
-  const aSub = acceptorCount > 1 ? acceptorCount.toString() : '';
-  const formula = `${donor.symbol}${dSub}${acceptor.symbol}${aSub}`;
+  const donorCharge = Math.max(1, donor.valanceElectrons ?? 1);
+  const acceptorCharge = Math.max(1, 8 - (acceptor.valanceElectrons ?? 7));
+  const divisor = gcd(donorCharge, acceptorCharge);
+  const donorCount = acceptorCharge / divisor;
+  const acceptorCount = donorCharge / divisor;
+  const donorSubscript = donorCount > 1 ? donorCount.toString() : '';
+  const acceptorSubscript = acceptorCount > 1 ? acceptorCount.toString() : '';
 
   return {
     donorCount,
     acceptorCount,
-    formula
+    formula: `${donor.symbol}${donorSubscript}${acceptor.symbol}${acceptorSubscript}`
   };
+}
+
+function hasResolvableElectronegativity(context: ReactionContext): boolean {
+  return !context.isNobleInvolved
+    && context.deltaEN !== null
+    && context.primaryAtom.electronegativity !== null
+    && context.secondaryAtom.electronegativity !== null;
+}
+
+function calculateIonicTransfer(donor: ElementData, acceptor: ElementData): IonicTransfer {
+  const donorValence = donor.valanceElectrons ?? 1;
+  const acceptorValence = acceptor.valanceElectrons ?? 7;
+  const transferredElectrons = Math.min(donorValence, Math.max(1, 8 - acceptorValence));
+  const cationCharge = donorValence <= 3 ? donorValence : 1;
+  const anionCharge = (8 - acceptorValence) <= 3 ? 8 - acceptorValence : 1;
+
+  return { transferredElectrons, cationCharge, anionCharge };
+}
+
+function findPredefinedIonicScenario(
+  primaryAtom: ElementData,
+  secondaryAtom: ElementData
+): ReactionScenario | undefined {
+  const symbols = new Set([primaryAtom.symbol, secondaryAtom.symbol]);
+  return reactions.find(reaction => reaction.bondType === 'ionic'
+    && reaction.reactantKeys.length === symbols.size
+    && reaction.reactantKeys.every(symbol => symbols.has(symbol)));
+}
+
+function createIonicExplanation(
+  context: ReactionContext,
+  transfer: IonicTransfer,
+  formulaRatio: FormulaRatio,
+  deltaEN: number
+): string {
+  const categoryReason = isMetalNonMetalPair(context.primaryAtom.category, context.secondaryAtom.category)
+    ? 'Metal ve ametal atomları arasında elektron aktarımı gerçekleşir.'
+    : `Elektronegatiflik farkı (ΔEN = ${deltaEN.toFixed(2)}) iyonik eşik değerini aşar.`;
+  const donorIon = formatIon(context.donor.symbol, '⁺', transfer.cationCharge);
+  const acceptorIon = formatIon(context.acceptor.symbol, '⁻', transfer.anionCharge);
+  return `${categoryReason} ${context.donor.symbol} atomu ${transfer.transferredElectrons} elektronunu ${context.acceptor.symbol} atomuna aktarır. ${donorIon} ve ${acceptorIon} iyonları arasında iyonik bağ (${formulaRatio.formula}) kurulur.`;
+}
+
+function formatIon(symbol: string, sign: '⁺' | '⁻', charge: number): string {
+  return `${symbol}${sign}${charge > 1 ? charge : ''}`;
+}
+
+function createIonicStep(
+  progressThreshold: number,
+  titleTR: string,
+  descriptionTR: string,
+  highlightAtom?: string
+): ReactionStep {
+  return { progressThreshold, titleTR, descriptionTR, highlightAtom };
+}
+
+function createIonicSteps(
+  context: ReactionContext,
+  transfer: IonicTransfer,
+  formulaRatio: FormulaRatio,
+  deltaEN: number
+): ReactionStep[] {
+  const donorIon = formatIon(context.donor.symbol, '⁺', transfer.cationCharge);
+  const acceptorIon = formatIon(context.acceptor.symbol, '⁻', transfer.anionCharge);
+  return [
+    createIonicStep(0, 'Başlangıç Durumu', `${context.donor.nameTR} (${context.donor.symbol}) ve ${context.acceptor.nameTR} (${context.acceptor.symbol}) atomları yaklaşıyor.`, context.donor.symbol),
+    createIonicStep(0.35, `Elektron Transferi (ΔEN = ${deltaEN.toFixed(2)})`, `${context.donor.symbol} atomundan ${context.acceptor.symbol} atomuna ${transfer.transferredElectrons} valans elektronu aktarılır.`, context.acceptor.symbol),
+    createIonicStep(0.75, 'İyon Oluşumu ve Kararlı Oktet', `${donorIon} katyonu ve ${acceptorIon} anyonu elektrostatik çekimle bağlanır.`, context.donor.symbol),
+    createIonicStep(1, 'İyonik Bağ Tamamlandı', `Kristal elektrostatik iyonik bağ (${formulaRatio.formula}) kuruldu.`)
+  ];
+}
+
+function createFallbackIonicScenario(
+  context: ReactionContext,
+  formulaRatio: FormulaRatio,
+  explanationTR: string,
+  transfer: IonicTransfer,
+  deltaEN: number
+): ReactionScenario {
+  return {
+    id: `ionic_${formulaRatio.formula.toLowerCase()}`,
+    nameTR: `${context.donor.nameTR} ${context.acceptor.nameTR} İyonik Bileşiği`,
+    formula: formulaRatio.formula,
+    reactantKeys: [context.donor.symbol, context.acceptor.symbol],
+    stoichiometry: [
+      { symbol: context.donor.symbol, count: formulaRatio.donorCount },
+      { symbol: context.acceptor.symbol, count: formulaRatio.acceptorCount }
+    ],
+    bondType: 'ionic',
+    deltaEN,
+    descriptionTR: explanationTR,
+    steps: createIonicSteps(context, transfer, formulaRatio, deltaEN)
+  };
+}
+
+function resolveIonicOuterElectronCount(element: ElementData): number | null {
+  if (element.valanceElectrons === null) return null;
+  return element.atomicNumber <= 2 ? 2 : 8;
+}
+
+function resolveIonicOctetStatuses(
+  primaryAtom: ElementData,
+  secondaryAtom: ElementData
+): readonly [OctetStatus, OctetStatus] {
+  return [
+    createOctetStatus(primaryAtom, resolveIonicOuterElectronCount(primaryAtom)),
+    createOctetStatus(secondaryAtom, resolveIonicOuterElectronCount(secondaryAtom))
+  ] as const;
 }
 
 export class IonicReactionStrategy implements IReactionStrategy {
@@ -36,90 +159,38 @@ export class IonicReactionStrategy implements IReactionStrategy {
   }
 
   public supports(context: ReactionContext): boolean {
-    const { deltaEN, isNobleInvolved } = context;
-    return !isNobleInvolved && deltaEN !== null && deltaEN > 1.7;
+    const deltaEN = context.deltaEN;
+    if (!hasResolvableElectronegativity(context) || deltaEN === null) return false;
+
+    const isNonMetalReactantPair = isNonMetalPair(context.primaryAtom.category, context.secondaryAtom.category);
+    const isIonicReactantPair = isMetalNonMetalPair(context.primaryAtom.category, context.secondaryAtom.category);
+    return isIonicReactantPair || (!isNonMetalReactantPair && deltaEN > IONIC_THRESHOLD);
   }
 
   public resolve(context: ReactionContext): ReactionResolution {
-    const { primaryAtom, secondaryAtom, deltaEN, donor, acceptor } = context;
-    const safeDeltaEN = deltaEN ?? 2.0;
-
-    const dVal = donor.valanceElectrons ?? 1;
-    const aVal = acceptor.valanceElectrons ?? 7;
-    const transferredElectrons = Math.min(dVal, 8 - aVal);
-    const cationCharge = dVal <= 3 ? dVal : 1;
-    const anionCharge = (8 - aVal) <= 3 ? (8 - aVal) : 1;
-    const formulaRatio = calculateIonicRatio(donor, acceptor);
-
-    const explanationTR = `Elektronegatiflik farkı (ΔEN = ${safeDeltaEN.toFixed(2)} > 1.7) yüksek olduğundan ${donor.symbol} atomu ${transferredElectrons} elektronunu ${acceptor.symbol} atomuna aktarır. Oluşan ${donor.symbol}⁺${cationCharge > 1 ? cationCharge : ''} ve ${acceptor.symbol}⁻${anionCharge > 1 ? anionCharge : ''} iyonları arasında iyonik bağ (${formulaRatio.formula}) kurulur.`;
-
-    // Check for predefined scenario or dynamically synthesize one
-    const symbols = [primaryAtom.symbol, secondaryAtom.symbol];
-    const existingScenario = reactions.find(
-      r => r.bondType === 'ionic' &&
-           r.reactantKeys.every(k => symbols.includes(k)) &&
-           symbols.every(s => r.reactantKeys.includes(s))
-    );
-
-    const scenario: ReactionScenario = existingScenario || {
-      id: `ionic_${formulaRatio.formula.toLowerCase()}`,
-      nameTR: `${donor.nameTR} ${acceptor.nameTR} İyonik Bileşiği`,
-      formula: formulaRatio.formula,
-      reactantKeys: [donor.symbol, acceptor.symbol],
-      stoichiometry: [
-        { symbol: donor.symbol, count: formulaRatio.donorCount },
-        { symbol: acceptor.symbol, count: formulaRatio.acceptorCount }
-      ],
-      bondType: 'ionic',
-      deltaEN: safeDeltaEN,
-      descriptionTR: explanationTR,
-      steps: [
-        {
-          progressThreshold: 0.0,
-          titleTR: 'Başlangıç Durumu',
-          descriptionTR: `${donor.nameTR} (${donor.symbol}) ve ${acceptor.nameTR} (${acceptor.symbol}) atomları yaklaşıyor.`,
-          highlightAtom: donor.symbol
-        },
-        {
-          progressThreshold: 0.35,
-          titleTR: `Elektron Transferi (ΔEN = ${safeDeltaEN.toFixed(2)})`,
-          descriptionTR: `ΔEN > 1.7 olduğundan ${donor.symbol} atomundan ${acceptor.symbol} atomuna ${transferredElectrons} valans elektronu aktarılır.`,
-          highlightAtom: acceptor.symbol
-        },
-        {
-          progressThreshold: 0.75,
-          titleTR: 'İyon Oluşumu ve Kararlı Oktet',
-          descriptionTR: `${donor.symbol}⁺${cationCharge > 1 ? cationCharge : ''} katyonu ve ${acceptor.symbol}⁻${anionCharge > 1 ? anionCharge : ''} anyonu elektrostatik çekimle bağlanır.`,
-          highlightAtom: donor.symbol
-        },
-        {
-          progressThreshold: 1.0,
-          titleTR: 'İyonik Bağ Tamamlandı',
-          descriptionTR: `Kristal elektrostatik iyonik bağ (${formulaRatio.formula}) kuruldu.`
-        }
-      ]
-    };
+    const deltaEN = context.deltaEN ?? IONIC_THRESHOLD;
+    const transfer = calculateIonicTransfer(context.donor, context.acceptor);
+    const formulaRatio = calculateIonicRatio(context.donor, context.acceptor);
+    const explanationTR = createIonicExplanation(context, transfer, formulaRatio, deltaEN);
+    const scenario = findPredefinedIonicScenario(context.primaryAtom, context.secondaryAtom)
+      ?? createFallbackIonicScenario(context, formulaRatio, explanationTR, transfer, deltaEN);
+    const octetStatuses = resolveIonicOctetStatuses(context.primaryAtom, context.secondaryAtom);
 
     return {
       scenario,
       bondAnalysis: {
         bondType: 'ionic',
-        deltaEN: safeDeltaEN,
-        primaryAtom,
-        secondaryAtom,
-        transferredElectrons,
-        cationCharge,
-        anionCharge,
+        deltaEN,
+        primaryAtom: context.primaryAtom,
+        secondaryAtom: context.secondaryAtom,
+        transferredElectrons: transfer.transferredElectrons,
+        cationCharge: transfer.cationCharge,
+        anionCharge: transfer.anionCharge,
         formulaRatio,
-        isOctetSatisfied: true,
+        octetStatuses,
         explanationTR
       },
-      physics: {
-        repulsion: false,
-        repulsionStrength: 0,
-        overlapDistance: 180,
-        isReactionOccurred: true
-      }
+      physics: { repulsion: false, repulsionStrength: 0, overlapDistance: 180, isReactionOccurred: true }
     };
   }
 }

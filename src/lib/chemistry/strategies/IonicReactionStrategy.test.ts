@@ -84,7 +84,43 @@ describe('IonicReactionStrategy.resolve()', () => {
     expect(res.bondAnalysis.deltaEN).toBe(2.23);
     expect(res.bondAnalysis.cationCharge).toBe(1);
     expect(res.bondAnalysis.anionCharge).toBe(1);
+    expect(res.bondAnalysis.octetStatuses).toMatchObject([
+      { symbol: 'Na', outerElectronCount: 8, targetElectronCount: 8, isSatisfied: true },
+      { symbol: 'Cl', outerElectronCount: 8, targetElectronCount: 8, isSatisfied: true }
+    ]);
     expect(res.physics.isReactionOccurred).toBe(true);
     expect(res.physics.repulsion).toBe(false);
+  });
+
+  it('rejects H + F because nonmetal pairs belong to the covalent strategy', () => {
+    const h = getElement('H');
+    const f = getElement('F');
+    const ctx: ReactionContext = {
+      reactants: [h, f],
+      primaryAtom: h,
+      secondaryAtom: f,
+      deltaEN: 1.78,
+      donor: h,
+      acceptor: f,
+      isNobleInvolved: false
+    };
+
+    expect(strategy.supports(ctx)).toBe(false);
+  });
+
+  it('accepts metal and nonmetal pairs before applying the ΔEN fallback', () => {
+    const al = getElement('Al');
+    const cl = getElement('Cl');
+    const ctx: ReactionContext = {
+      reactants: [al, cl],
+      primaryAtom: al,
+      secondaryAtom: cl,
+      deltaEN: 1.55,
+      donor: al,
+      acceptor: cl,
+      isNobleInvolved: false
+    };
+
+    expect(strategy.supports(ctx)).toBe(true);
   });
 });

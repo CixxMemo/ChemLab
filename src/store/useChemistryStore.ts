@@ -6,6 +6,38 @@ import { resolveScenario, getAllScenarios } from '../lib/chemistry/stoichiometry
 
 const elementsMap = rawElements as Record<string, ElementData>;
 
+const MAX_SELECTED_ELEMENTS = 2;
+const INERT_SCENARIO_PAIR = ['He', 'Ne'] as const;
+
+function getScenarioSelectionKeys(scenario: ReactionScenario): readonly string[] {
+  const reactantKeys = scenario.id === 'inert_gas'
+    ? INERT_SCENARIO_PAIR
+    : scenario.reactantKeys;
+
+  return reactantKeys.slice(0, MAX_SELECTED_ELEMENTS);
+}
+
+function resolveSelectedElements(
+  elements: Record<string, ElementData>,
+  symbols: readonly string[]
+): ElementData[] {
+  const elementsBySymbol = new Map(
+    Object.values(elements).map(element => [element.symbol, element] as const)
+  );
+
+  return symbols.flatMap(symbol => {
+    const element = elementsBySymbol.get(symbol);
+    return element ? [element] : [];
+  });
+}
+
+function resolveSelectedBond(selectedElements: readonly ElementData[]): BondAnalysis | null {
+  const [primaryAtom, secondaryAtom] = selectedElements;
+  if (!primaryAtom) return null;
+
+  return resolveBond(primaryAtom, secondaryAtom ?? primaryAtom);
+}
+
 export interface ChemistryState {
   // Domain Data
   elements: Record<string, ElementData>;
@@ -115,19 +147,12 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
     const target = scenarios.find(s => s.id === scenarioId);
     if (!target) return;
 
-    const allElements = Object.values(get().elements);
-    const selected: ElementData[] = [];
+    const selected = resolveSelectedElements(
+      get().elements,
+      getScenarioSelectionKeys(target)
+    );
 
-    target.reactantKeys.forEach(sym => {
-      const el = allElements.find(e => e.symbol === sym);
-      if (el) selected.push(el);
-    });
-
-    const bond = selected.length >= 2
-      ? resolveBond(selected[0], selected[1])
-      : selected.length === 1
-      ? resolveBond(selected[0], selected[0])
-      : null;
+    const bond = resolveSelectedBond(selected);
 
     set({
       activeScenario: target,

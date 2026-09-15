@@ -47,6 +47,22 @@ export interface IOctetStatusData {
   valanceElectrons: number | null;
 }
 
+export type ElectronStabilityRule = 'Dublet' | 'Oktet';
+export type ElectronTargetCount = 2 | 8;
+
+/**
+ * Immutable resolved electron-shell status for a selected atom.
+ * This is an outcome of reaction resolution, not animation state.
+ */
+export interface OctetStatus {
+  readonly atomicNumber: number;
+  readonly symbol: string;
+  readonly outerElectronCount: number | null;
+  readonly targetElectronCount: ElectronTargetCount;
+  readonly isSatisfied: boolean;
+  readonly ruleName: ElectronStabilityRule;
+}
+
 export interface ElementData extends IElementInfo, IAtomRenderData, IOctetStatusData {
   atomicNumber: number;
   symbol: string;
@@ -106,7 +122,7 @@ export interface BondAnalysis {
   cationCharge?: number;
   anionCharge?: number;
   formulaRatio?: FormulaRatio;
-  isOctetSatisfied: boolean;
+  octetStatuses: readonly [OctetStatus, OctetStatus];
   explanationTR: string;
 }
 

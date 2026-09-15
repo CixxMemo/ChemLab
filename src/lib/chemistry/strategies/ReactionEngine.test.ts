@@ -37,6 +37,10 @@ describe('ReactionEngine.resolve()', () => {
 
       expect(resolution).not.toBeNull();
       expect(resolution?.bondAnalysis.bondType).toBe('no-bond');
+      expect(resolution?.bondAnalysis.octetStatuses).toMatchObject([
+        { symbol: 'He', outerElectronCount: 2, targetElectronCount: 2, isSatisfied: true },
+        { symbol: 'Ne', outerElectronCount: 8, targetElectronCount: 8, isSatisfied: true }
+      ]);
       expect(resolution?.physics.repulsion).toBe(true);
       expect(resolution?.physics.isReactionOccurred).toBe(false);
     });
@@ -52,6 +56,17 @@ describe('ReactionEngine.resolve()', () => {
       expect(resolution?.physics.isReactionOccurred).toBe(false);
     });
 
+    it('preserves initial electron counts for a mixed inert pair', () => {
+      const ar = getElement('Ar');
+      const na = getElement('Na');
+      const resolution = engine.resolve([ar, na]);
+
+      expect(resolution?.bondAnalysis.octetStatuses).toMatchObject([
+        { symbol: 'Ar', outerElectronCount: 8, targetElectronCount: 8, isSatisfied: true },
+        { symbol: 'Na', outerElectronCount: 1, targetElectronCount: 8, isSatisfied: false }
+      ]);
+    });
+
     it('short-circuits to InertReactionStrategy when element has null electronegativity', () => {
       const rf = getElement('Rf'); // Rutherfordium has electronegativity: null
       const cl = getElement('Cl');
@@ -65,6 +80,15 @@ describe('ReactionEngine.resolve()', () => {
   });
 
   describe('ΔEN = 1.7 boundary (Ionic vs Covalent selection)', () => {
+    it('selects CovalentReactionStrategy for H + F despite ΔEN = 1.78', () => {
+      const h = getElement('H');
+      const f = getElement('F');
+      const resolution = engine.resolve([h, f]);
+
+      expect(resolution?.bondAnalysis.bondType).toBe('polar-covalent');
+      expect(resolution?.bondAnalysis.deltaEN).toBe(1.78);
+    });
+
     it('selects IonicReactionStrategy when ΔEN > 1.7 (e.g. real NaCl, ΔEN = 2.23)', () => {
       const na = getElement('Na');
       const cl = getElement('Cl');

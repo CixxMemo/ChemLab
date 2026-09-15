@@ -3,6 +3,7 @@ import { InertReactionStrategy } from './InertReactionStrategy';
 import { IonicReactionStrategy } from './IonicReactionStrategy';
 import { CovalentReactionStrategy } from './CovalentReactionStrategy';
 import { ElementData, BondAnalysis, ReactionScenario } from '../../../types/chemistry';
+import { createOctetStatus } from '../reactionDomain';
 import rawElements from '../../../data/elements.json';
 
 const defaultElementsMap = rawElements as Record<string, ElementData>;
@@ -110,13 +111,18 @@ export class ReactionEngine {
       return resolution.bondAnalysis;
     }
 
+    const octetStatuses = [
+      createOctetStatus(elemA, elemA.valanceElectrons),
+      createOctetStatus(elemB, elemB.valanceElectrons)
+    ] as const;
+
     // Default safe fallback if single element or missing
     return {
       bondType: 'no-bond',
       deltaEN: null,
       primaryAtom: elemA,
       secondaryAtom: elemB,
-      isOctetSatisfied: true,
+      octetStatuses,
       explanationTR: 'Bağ oluşturmak için 2. bir element seçin.'
     };
   }

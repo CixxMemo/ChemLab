@@ -75,21 +75,23 @@ export const LiveInfoPanel: React.FC = () => {
       {/* Pauling Electronegativity Bar */}
       <ElectronegativityBar deltaEN={deltaEN} />
 
-      {/* Octet & Duplet Status for Active Reactants */}
-      <div className="flex flex-col gap-1.5">
-        <span className="text-[11px] font-mono text-slate-400">
-          Kararlılık Durumu (Oktet / Dublet):
-        </span>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {selectedElements.map((el, i) => (
-            <OctetStatusBadge
-              key={`${el.symbol}-${i}`}
-              element={el}
-              progress={progress}
-            />
-          ))}
+      {/* Resolved electron-shell status is intentionally independent of playback progress. */}
+      {bondAnalysis && (
+        <div className="flex flex-col gap-1.5">
+          <span className="text-[11px] font-mono text-slate-400">
+            Kararlılık Durumu (Oktet / Dublet):
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {selectedElements.map((element, index) => (
+              <OctetStatusBadge
+                key={`${element.symbol}-${index}`}
+                element={element}
+                status={bondAnalysis.octetStatuses[index]}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Detailed Chemical Rationale */}
       {bondAnalysis && (

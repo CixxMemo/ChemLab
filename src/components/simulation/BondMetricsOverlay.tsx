@@ -25,13 +25,13 @@ export const BondMetricsOverlay: React.FC = () => {
       badgeColor = 'bg-slate-800/90 text-chem-alkaline border-slate-700';
     }
   } else if (bondType === 'ionic') {
-    bondTypeLabel = 'İyonik Bağ (ΔEN > 1.7)';
+    bondTypeLabel = 'İyonik Bağ';
     badgeColor = 'bg-sky-950/80 text-chem-ionic border-sky-600/60';
   } else if (bondType === 'polar-covalent') {
-    bondTypeLabel = 'Polar Kovalent (0.4 < ΔEN ≤ 1.7)';
+    bondTypeLabel = 'Polar Kovalent Bağ';
     badgeColor = 'bg-amber-950/80 text-chem-polar border-amber-600/60';
   } else if (bondType === 'nonpolar-covalent') {
-    bondTypeLabel = 'Apolar Kovalent (ΔEN ≤ 0.4)';
+    bondTypeLabel = 'Apolar Kovalent Bağ';
     badgeColor = 'bg-emerald-950/80 text-chem-covalent border-emerald-600/60';
   } else if (bondType === 'inert' || bondType === 'no-bond') {
     bondTypeLabel = 'Asal / Tepkime Yok (no-bond)';

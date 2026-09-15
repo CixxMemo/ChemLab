@@ -105,13 +105,13 @@ export const SimulationModal: React.FC = () => {
       badgeColor = 'bg-slate-800/90 text-chem-alkaline border-slate-700';
     }
   } else if (bondType === 'ionic') {
-    bondTypeLabel = 'İyonik Bağ (ΔEN > 1.7)';
+    bondTypeLabel = 'İyonik Bağ';
     badgeColor = 'bg-sky-950/90 text-chem-ionic border-sky-600/70';
   } else if (bondType === 'polar-covalent') {
-    bondTypeLabel = 'Polar Kovalent (0.4 < ΔEN ≤ 1.7)';
+    bondTypeLabel = 'Polar Kovalent Bağ';
     badgeColor = 'bg-amber-950/90 text-chem-polar border-amber-600/70';
   } else if (bondType === 'nonpolar-covalent') {
-    bondTypeLabel = 'Apolar Kovalent (ΔEN ≤ 0.4)';
+    bondTypeLabel = 'Apolar Kovalent Bağ';
     badgeColor = 'bg-emerald-950/90 text-chem-covalent border-emerald-600/70';
   } else if (bondType === 'inert' || bondType === 'no-bond') {
     bondTypeLabel = 'Asal / Tepkime Yok (no-bond)';
@@ -265,12 +265,15 @@ export const SimulationModal: React.FC = () => {
             </div>
           ) : null}
 
-          {/* Floating Octet Badges inside Modal Top Right */}
-          {selectedElements.length > 0 && (
+          {/* Floating resolved electron-shell status */}
+          {bondAnalysis && selectedElements.length > 0 && (
             <div className="absolute top-4 right-4 z-10 hidden sm:flex flex-col gap-1.5 max-w-xs pointer-events-none">
-              {selectedElements.map((el, i) => (
-                <div key={`${el.symbol}-${i}`} className="pointer-events-auto">
-                  <OctetStatusBadge element={el} progress={progress} />
+              {selectedElements.map((element, index) => (
+                <div key={`${element.symbol}-${index}`} className="pointer-events-auto">
+                  <OctetStatusBadge
+                    element={element}
+                    status={bondAnalysis.octetStatuses[index]}
+                  />
                 </div>
               ))}
             </div>

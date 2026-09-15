@@ -46,7 +46,7 @@ export const ElectronegativityBar: React.FC<ElectronegativityBarProps> = ({ delt
           className="absolute top-0 bottom-0 bg-amber-900/60 border-r border-amber-500/40"
           style={{ left: `${apolarLimitPct}%`, width: `${polarLimitPct - apolarLimitPct}%` }}
         />
-        {/* Ionic segment (1.7 to 3.3) */}
+        {/* High-ΔEN reference segment; bond type also depends on atom categories. */}
         <div
           className="absolute top-0 bottom-0 bg-sky-900/60"
           style={{ left: `${polarLimitPct}%`, right: 0 }}
@@ -63,8 +63,8 @@ export const ElectronegativityBar: React.FC<ElectronegativityBarProps> = ({ delt
       <div className="flex justify-between text-[9.5px] font-mono text-slate-400">
         <span className="text-chem-covalent">0.0 (Apolar)</span>
         <span className="text-chem-polar">0.4</span>
-        <span className="text-chem-polar">1.7 (Polar)</span>
-        <span className="text-chem-ionic">&gt;1.7 (İyonik)</span>
+        <span className="text-chem-polar">1.7 (Eşik)</span>
+        <span className="text-chem-ionic">&gt;1.7 (Bağlama bağlı)</span>
       </div>
     </div>
   );

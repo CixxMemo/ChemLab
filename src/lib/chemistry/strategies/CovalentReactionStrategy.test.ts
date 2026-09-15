@@ -113,6 +113,22 @@ describe('CovalentReactionStrategy Bond-Order Calculations', () => {
       expect(res.bondAnalysis.deltaEN).toBe(1.24);
     });
 
+    it('resolves H + F as polar covalent when two nonmetals exceed the ionic threshold', () => {
+      const h = getElement('H');
+      const f = getElement('F');
+      const ctx = makeContext(h, f);
+      const res = strategy.resolve(ctx);
+
+      expect(ctx.deltaEN).toBe(1.78);
+      expect(strategy.supports(ctx)).toBe(true);
+      expect(res.bondAnalysis.bondType).toBe('polar-covalent');
+      expect(res.bondAnalysis.explanationTR).not.toContain('≤ 1.7');
+      expect(res.bondAnalysis.octetStatuses).toMatchObject([
+        { symbol: 'H', outerElectronCount: 2, targetElectronCount: 2, isSatisfied: true },
+        { symbol: 'F', outerElectronCount: 8, targetElectronCount: 8, isSatisfied: true }
+      ]);
+    });
+
     it('calculates 1 shared pair per bond for C + H (CH₄, nonpolar covalent)', () => {
       const c = getElement('C');
       const h = getElement('H');
