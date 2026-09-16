@@ -6,7 +6,7 @@ import { FilterBar } from './FilterBar';
 import { CategoryLegend } from './CategoryLegend';
 import { ElementData } from '../../types/chemistry';
 
-export const PeriodicTable: React.FC = () => {
+export const PeriodicTable: React.FC<{ guided?: boolean }> = ({ guided = false }) => {
   const { filterCategory, setFilterCategory } = useUIStore();
   const { elements, hoveredElement } = useChemistryStore();
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,6 +55,7 @@ export const PeriodicTable: React.FC = () => {
         key={el.atomicNumber}
         element={el}
         isDimmed={isDimmed}
+        locked={guided}
         gridColumnStart={gridColStart}
       />
     );
@@ -63,7 +64,7 @@ export const PeriodicTable: React.FC = () => {
   return (
     <div className="flex flex-col h-full bg-slate-950 overflow-hidden select-none">
       {/* Search & Selection Bar */}
-      <FilterBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+      <FilterBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} guided={guided} />
 
       {/* Category Legend & Filter Chips */}
       <CategoryLegend />
@@ -108,8 +109,9 @@ export const PeriodicTable: React.FC = () => {
             {renderCell(56, 2)}
             {/* Lanthanide Marker in Col 3 */}
             <button
+              type="button"
               onClick={() => setFilterCategory(filterCategory === 'lanthanide' ? null : 'lanthanide')}
-              className={`flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
+              className={`touch-target flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
                 filterCategory === 'lanthanide'
                   ? 'bg-slate-800 border-white text-slate-50'
                   : 'bg-slate-900/60 border-slate-700/60 text-slate-400 hover:border-slate-500 hover:bg-slate-800'
@@ -126,8 +128,9 @@ export const PeriodicTable: React.FC = () => {
             {renderCell(88, 2)}
             {/* Actinide Marker in Col 3 */}
             <button
+              type="button"
               onClick={() => setFilterCategory(filterCategory === 'actinide' ? null : 'actinide')}
-              className={`flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
+              className={`touch-target flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
                 filterCategory === 'actinide'
                   ? 'bg-slate-800 border-white text-slate-50'
                   : 'bg-slate-900/60 border-slate-700/60 text-slate-400 hover:border-slate-500 hover:bg-slate-800'
@@ -144,23 +147,25 @@ export const PeriodicTable: React.FC = () => {
           <div className="mt-2 pt-2 border-t border-slate-800/80 flex flex-col gap-1">
             {/* Lanthanides Row (57-71) */}
             <div className="grid grid-cols-18 gap-1 w-full items-center">
-              <div
+              <button
+                type="button"
                 onClick={() => setFilterCategory(filterCategory === 'lanthanide' ? null : 'lanthanide')}
-                className="col-span-3 flex items-center justify-end pr-2 text-[10px] font-mono text-slate-400 font-semibold cursor-pointer hover:text-slate-200"
+                className="touch-target col-span-3 flex items-center justify-end pr-2 text-[10px] font-mono text-slate-400 font-semibold hover:text-slate-200"
               >
                 * Lantanitler (57-71)
-              </div>
+              </button>
               {Array.from({ length: 15 }, (_, i) => i + 57).map(z => renderCell(z))}
             </div>
 
             {/* Actinides Row (89-103) */}
             <div className="grid grid-cols-18 gap-1 w-full items-center">
-              <div
+              <button
+                type="button"
                 onClick={() => setFilterCategory(filterCategory === 'actinide' ? null : 'actinide')}
-                className="col-span-3 flex items-center justify-end pr-2 text-[10px] font-mono text-slate-400 font-semibold cursor-pointer hover:text-slate-200"
+                className="touch-target col-span-3 flex items-center justify-end pr-2 text-[10px] font-mono text-slate-400 font-semibold hover:text-slate-200"
               >
                 ** Aktinitler (89-103)
-              </div>
+              </button>
               {Array.from({ length: 15 }, (_, i) => i + 89).map(z => renderCell(z))}
             </div>
           </div>

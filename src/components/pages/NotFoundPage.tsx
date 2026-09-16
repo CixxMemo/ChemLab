@@ -11,7 +11,7 @@ interface NotFoundPageProps {
 const MESSAGE: Readonly<Record<NotFoundReason, { label: string; title: string; description: string }>> = {
   page: { label: 'Bağlantı bulunamadı', title: 'Bu sayfa bulunamadı.', description: 'Adres değişmiş olabilir. Ana sayfaya dönerek kullanıma açık bölümlerden birini seçebilirsin.' },
   experiment: { label: 'Deney bulunamadı', title: 'Bu deney henüz kullanılabilir değil.', description: 'Doğrulanmış hazır deneylerden birini açabilir veya serbest laboratuvarda atomları kendin seçebilirsin.' },
-  content: { label: 'İçerik hazırlık aşamasında', title: 'Ders içeriği henüz açık değil.', description: 'Konu ve hazır ders sayfaları sonraki geliştirme aşamasında açılacak. Şimdilik doğrulanmış deneyleri laboratuvarda inceleyebilirsin.' }
+  content: { label: 'Konu bulunamadı', title: 'Bu ders içeriği bulunamadı.', description: 'Altı hazır konudan birini öğrenci veya öğretmen sayfasından seçebilirsin.' }
 };
 
 export const NotFoundPage: React.FC<NotFoundPageProps> = ({ reason = 'page' }) => (

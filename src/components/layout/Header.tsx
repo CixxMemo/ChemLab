@@ -5,7 +5,7 @@ import { useNavigationStore } from '../../store/useNavigationStore';
 import { getLaboratoryPath, resolveRoute } from '../../navigation/routes';
 import { FlaskConical, Sparkles, Layers } from 'lucide-react';
 
-export const Header: React.FC = () => {
+export const Header: React.FC<{ guided?: boolean }> = ({ guided = false }) => {
   const { viewMode, setViewMode } = useUIStore();
   const pathname = useNavigationStore(state => state.pathname);
   const navigate = useNavigationStore(state => state.navigate);
@@ -44,7 +44,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Core Scenarios Quick Selector (Strict 5 Scenarios) */}
-      <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto bg-slate-950 p-1 rounded border border-slate-700">
+      {!guided ? <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto bg-slate-950 p-1 rounded border border-slate-700">
         <span className="text-[11px] font-mono text-slate-400 px-2 flex items-center gap-1">
           <Sparkles className="w-3.5 h-3.5 text-chem-alkaline" />
           Senaryolar:
@@ -67,7 +67,7 @@ export const Header: React.FC = () => {
             </button>
           );
         })}
-      </div>
+      </div> : <span className="text-sm text-slate-300">Rehberli deney · seçili atom çifti sabit</span>}
 
       {/* Controls: Electronegativity Heatmap Toggle */}
       <div className="flex items-center gap-2">

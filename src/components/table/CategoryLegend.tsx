@@ -42,8 +42,9 @@ export const CategoryLegend: React.FC = () => {
 
       {filterCategory && (
         <button
+          type="button"
           onClick={() => setFilterCategory(null)}
-          className="text-xs text-slate-400 hover:text-slate-200 underline ml-auto px-2 py-1"
+          className="touch-target text-xs text-slate-400 hover:text-slate-200 underline ml-auto px-2 py-1"
         >
           Filtreyi Temizle
         </button>

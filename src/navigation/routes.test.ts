@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getLaboratoryPath, getModePath, resolveRoute } from './routes';
+import { getLaboratoryPath, getModePath, getTaskListPath, getTaskPath, getTopicPath, resolveRoute } from './routes';
 
 describe('client-side routes', () => {
   it('opens the landing page at the root', () => {
@@ -19,8 +19,14 @@ describe('client-side routes', () => {
 
   it('normalizes trailing slashes and rejects unavailable routes', () => {
     expect(resolveRoute('/ogrenci/')).toEqual({ kind: 'mode', mode: 'student' });
-    expect(resolveRoute('/ogrenci/konu/iyonik-bag')).toEqual({ kind: 'reserved', mode: 'student' });
-    expect(resolveRoute('/ogretmen/ders/iyonik-bag')).toEqual({ kind: 'reserved', mode: 'teacher' });
+    expect(resolveRoute(getTopicPath('student', 'iyonik-bag'))).toEqual({ kind: 'topic', mode: 'student', topicId: 'iyonik-bag' });
+    expect(resolveRoute(getTopicPath('teacher', 'iyonik-bag'))).toEqual({ kind: 'topic', mode: 'teacher', topicId: 'iyonik-bag' });
     expect(resolveRoute('/deney/%')).toEqual({ kind: 'not-found', mode: 'free' });
+  });
+
+  it('opens student-only guided task routes', () => {
+    expect(resolveRoute(getTaskListPath())).toEqual({ kind: 'task-list', mode: 'student' });
+    expect(resolveRoute(getTaskPath('hf-yanilgisi'))).toEqual({ kind: 'task', mode: 'student', taskId: 'hf-yanilgisi' });
+    expect(resolveRoute('/ogretmen/gorevler')).toEqual({ kind: 'not-found', mode: 'free' });
   });
 });

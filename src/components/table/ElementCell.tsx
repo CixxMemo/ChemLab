@@ -8,9 +8,10 @@ interface ElementCellProps {
   element: IElementInfo;
   isDimmed?: boolean;
   gridColumnStart?: number;
+  locked?: boolean;
 }
 
-export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gridColumnStart }) => {
+export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gridColumnStart, locked = false }) => {
   const { viewMode } = useUIStore();
   const { selectedElements, selectElement, hoveredElement, setHoveredElement } = useChemistryStore();
 
@@ -35,6 +36,7 @@ export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gri
       id={`element-cell-${element.symbol.toLowerCase()}`}
       data-symbol={element.symbol}
       onClick={() => selectElement(element)}
+      disabled={locked}
       onMouseEnter={() => setHoveredElement(element)}
       onMouseLeave={() => setHoveredElement(null)}
       style={{

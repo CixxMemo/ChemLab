@@ -1,7 +1,8 @@
 import React from 'react';
 import { ArrowRight, Atom, BookOpen, FlaskConical, Presentation } from 'lucide-react';
 import { AppLink } from '../navigation/AppLink';
-import { getLaboratoryPath, getModePath } from '../../navigation/routes';
+import { getLaboratoryPath, getModePath, getTopicPath } from '../../navigation/routes';
+import { learningTopics } from '../../data/learningTopics';
 
 const PRIMARY_LINK = 'touch-target inline-flex items-center justify-center gap-2 rounded border border-chem-transition bg-slate-800 px-5 py-2 font-semibold text-slate-50 transition-colors hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-50';
 const SECONDARY_LINK = 'touch-target inline-flex items-center justify-center gap-2 rounded border border-slate-700 px-5 py-2 font-semibold text-slate-200 transition-colors hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-slate-50';
@@ -54,7 +55,13 @@ export const LandingPage: React.FC = () => (
         <LearningPreview />
       </div>
       <AudienceCards />
-      <p className="border-t border-slate-700 pt-5 text-xs leading-relaxed text-slate-400">ChemLab şu anda doğrulanmış örnek deneyler ve serbest keşif sunar. Serbest element eşleştirmeleri sadeleştirilmiş bir öğretim modelidir; bağ kutupluluğu ile tüm molekülün kutupluluğu aynı kavram değildir.</p>
+      <section aria-labelledby="home-topics-heading">
+        <h2 id="home-topics-heading" className="text-xl font-semibold">Çalışılabilir konular</h2>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {learningTopics.map(topic => <AppLink key={topic.id} to={getTopicPath('student', topic.id)} className="touch-target inline-flex items-center rounded border border-slate-700 bg-slate-900 px-4 text-sm text-slate-200 hover:border-chem-transition">{topic.title}</AppLink>)}
+        </div>
+      </section>
+      <p className="border-t border-slate-700 pt-5 text-xs leading-relaxed text-slate-400">Altı rehberli konu ve doğrulanmış örnek deney erişime açıktır. Serbest element eşleştirmeleri sadeleştirilmiş bir öğretim modelidir; bağ kutupluluğu ile tüm molekülün kutupluluğu aynı kavram değildir.</p>
     </div>
   </div>
 );

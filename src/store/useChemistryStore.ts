@@ -53,7 +53,7 @@ export interface ChemistryState {
   selectElement: (element: IElementInfo) => void;
   deselectElement: (target: string | number) => void;
   setHoveredElement: (element: IElementInfo | null) => void;
-  loadScenarioById: (scenarioId: string) => void;
+  loadScenarioById: (scenarioId: string, options?: { autoplay?: boolean }) => void;
   setPlaybackStatus: (status: PlaybackStatus) => void;
   setProgress: (progress: number) => void;
   stepForward: () => void;
@@ -137,7 +137,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
     set({ hoveredElement: resolved });
   },
 
-  loadScenarioById: (scenarioId: string) => {
+  loadScenarioById: (scenarioId: string, options) => {
     const scenarios = get().scenarios;
     const target = scenarios.find(s => s.id === scenarioId);
     if (!target) return;
@@ -154,7 +154,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
       selectedElements: selected,
       bondAnalysis: bond,
       progress: 0,
-      playbackStatus: 'playing'
+      playbackStatus: options?.autoplay === false ? 'paused' : 'playing'
     });
   },
 

@@ -3,6 +3,9 @@ import { LandingPage } from './components/pages/LandingPage';
 import { ExperiencePage } from './components/pages/ExperiencePage';
 import { LaboratoryPage } from './components/pages/LaboratoryPage';
 import { NotFoundPage } from './components/pages/NotFoundPage';
+import { LessonPage } from './components/pages/LessonPage';
+import { TaskListPage } from './components/pages/TaskListPage';
+import { TaskPage } from './components/pages/TaskPage';
 import { SiteHeader } from './components/navigation/SiteHeader';
 import { AppRoute, resolveRoute } from './navigation/routes';
 import { useNavigationStore } from './store/useNavigationStore';
@@ -12,7 +15,9 @@ function renderRoute(route: AppRoute): React.ReactNode {
     case 'home': return <LandingPage />;
     case 'mode': return <ExperiencePage mode={route.mode} />;
     case 'laboratory': return <LaboratoryPage mode={route.mode} scenarioId={route.scenarioId} />;
-    case 'reserved': return <NotFoundPage reason="content" />;
+    case 'topic': return <LessonPage mode={route.mode} topicId={route.topicId} />;
+    case 'task-list': return <TaskListPage />;
+    case 'task': return <TaskPage taskId={route.taskId} />;
     case 'not-found': return <NotFoundPage />;
   }
 }

@@ -23,4 +23,12 @@ describe('useChemistryStore.loadScenarioById', () => {
 
     expect(selectedElements.map(element => element.symbol)).toEqual(['Na', 'Cl']);
   });
+
+  it('prepares guided experiments paused without changing sandbox autoplay', () => {
+    useChemistryStore.getState().loadScenarioById('nacl', { autoplay: false });
+    expect(useChemistryStore.getState().playbackStatus).toBe('paused');
+    expect(useChemistryStore.getState().progress).toBe(0);
+    useChemistryStore.getState().loadScenarioById('nacl');
+    expect(useChemistryStore.getState().playbackStatus).toBe('playing');
+  });
 });

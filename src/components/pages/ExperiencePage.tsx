@@ -1,9 +1,12 @@
 import React from 'react';
 import { ArrowRight, BookOpen, FlaskConical, Presentation } from 'lucide-react';
 import { AppLink } from '../navigation/AppLink';
-import { getLaboratoryPath } from '../../navigation/routes';
+import { getLaboratoryPath, getTaskListPath, getTopicPath } from '../../navigation/routes';
+import { learningTopics } from '../../data/learningTopics';
+import { useLearningProgressStore } from '../../store/useLearningProgressStore';
 
 type AudienceMode = 'student' | 'teacher';
+const TOPIC_INDEX_DIGITS = 2; // Align the six topic ordinals as 01–06.
 
 interface ExperiencePageProps {
   mode: AudienceMode;
@@ -49,6 +52,26 @@ const ExampleList: React.FC<ExperiencePageProps> = ({ mode }) => (
   </section>
 );
 
+const TopicList: React.FC<ExperiencePageProps> = ({ mode }) => {
+  const completedTopicIds = useLearningProgressStore(state => state.completedTopicIds);
+  return (
+  <section aria-labelledby="topics-heading" className="rounded border border-slate-700 bg-slate-900 p-5 md:p-7">
+    <h2 id="topics-heading" className="text-xl font-semibold">Altı kısa konu</h2>
+    <p className="mt-2 text-sm text-slate-300">Hedef → tahmin → deney → üç açıklamalı soru.</p>
+    <div className="mt-5 grid gap-3 md:grid-cols-2">
+      {learningTopics.map((topic, index) => (
+        <AppLink key={topic.id} to={getTopicPath(mode, topic.id)} className="touch-target rounded border border-slate-700 bg-slate-950 px-4 py-3 hover:border-chem-transition focus-visible:outline focus-visible:outline-2">
+          <span className="font-mono text-xs text-chem-transition">{String(index + 1).padStart(TOPIC_INDEX_DIGITS, '0')}</span>
+          <span className="ml-2 font-semibold">{topic.title}</span>
+          <span className="mt-1 block text-sm text-slate-400">{topic.objective}</span>
+          {mode === 'student' && completedTopicIds.includes(topic.id) && <span className="mt-2 block text-sm text-chem-nonmetal">Tamamlandı ✓</span>}
+        </AppLink>
+      ))}
+    </div>
+  </section>
+  );
+};
+
 export const ExperiencePage: React.FC<ExperiencePageProps> = ({ mode }) => {
   const copy = EXPERIENCE_COPY[mode];
   const Icon = mode === 'student' ? BookOpen : Presentation;
@@ -64,9 +87,11 @@ export const ExperiencePage: React.FC<ExperiencePageProps> = ({ mode }) => {
           <AppLink to={getLaboratoryPath(mode)} className="touch-target mt-8 inline-flex items-center justify-center gap-2 rounded border border-chem-transition bg-slate-800 px-5 py-2 font-semibold text-slate-50 transition-colors hover:bg-slate-700">
             <FlaskConical className="h-4 w-4" aria-hidden="true" /> Laboratuvarı aç
           </AppLink>
+          {mode === 'student' && <AppLink to={getTaskListPath()} className="touch-target ml-0 mt-3 inline-flex items-center rounded border border-chem-nonmetal px-5 text-chem-nonmetal hover:bg-slate-800 sm:ml-3">10 rehberli göreve geç →</AppLink>}
           <p className="mt-6 max-w-xl border-l-2 border-chem-alkaline pl-4 text-sm leading-relaxed text-slate-300">{copy.instruction}</p>
         </section>
         <ExampleList mode={mode} />
+        <div className="lg:col-span-2"><TopicList mode={mode} /></div>
       </div>
     </div>
   );

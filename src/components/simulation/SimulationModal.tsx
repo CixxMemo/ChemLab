@@ -19,7 +19,7 @@ import {
   Info
 } from 'lucide-react';
 
-export const SimulationModal: React.FC = () => {
+export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false }) => {
   const { isAnimationModalOpen, closeAnimationModal } = useUIStore();
   const {
     activeScenario,
@@ -188,7 +188,7 @@ export const SimulationModal: React.FC = () => {
           </div>
 
           {/* Center: Scenario Quick Switcher */}
-          <div className="hidden lg:flex items-center gap-1 bg-slate-900 p-1 rounded border border-slate-800">
+          {!guided && <div className="hidden lg:flex items-center gap-1 bg-slate-900 p-1 rounded border border-slate-800">
             <span className="text-[11px] font-mono text-slate-400 px-1.5 flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-chem-alkaline" />
               Senaryolar:
@@ -210,7 +210,7 @@ export const SimulationModal: React.FC = () => {
                 </button>
               );
             })}
-          </div>
+          </div>}
 
           {/* Right: Close Button */}
           <div className="flex items-center gap-2">
@@ -298,6 +298,7 @@ export const SimulationModal: React.FC = () => {
             </span>
             <input
               type="range"
+              aria-label="Büyük ekran simülasyon ilerlemesi"
               min={0}
               max={1}
               step={0.005}
@@ -309,7 +310,7 @@ export const SimulationModal: React.FC = () => {
                 }
               }}
               disabled={!isPlayable}
-              className="flex-1 h-2.5 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-chem-transition disabled:opacity-40"
+              className="touch-target min-w-0 flex-1 h-10 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-chem-transition disabled:opacity-40"
             />
             <span className="text-xs font-mono text-slate-400 w-14">
               {progress >= 1 ? 'Tamamlandı' : 'Aşama'}
@@ -379,12 +380,12 @@ export const SimulationModal: React.FC = () => {
             </div>
 
             {/* Mobile / Compact Scenario Selector */}
-            <div className="flex lg:hidden items-center gap-1 bg-slate-950 p-1 rounded border border-slate-800">
+            {!guided && <div className="flex max-w-full lg:hidden items-center gap-1 overflow-x-auto bg-slate-950 p-1 rounded border border-slate-800">
               {scenarios.map((sc) => (
                 <button
                   key={sc.id}
                   onClick={() => loadScenarioById(sc.id)}
-                  className={`h-7 px-2 rounded font-mono text-[11px] font-semibold ${
+                  className={`touch-target h-10 shrink-0 px-2 rounded font-mono text-[11px] font-semibold ${
                     activeScenario?.id === sc.id
                       ? 'bg-slate-800 text-slate-50 border border-chem-highlight'
                       : 'text-slate-400'
@@ -393,7 +394,7 @@ export const SimulationModal: React.FC = () => {
                   {sc.formula}
                 </button>
               ))}
-            </div>
+            </div>}
 
             {/* Right: Playback Speed Selector */}
             <div className="flex items-center gap-1 bg-slate-950 p-1 rounded border border-slate-700">

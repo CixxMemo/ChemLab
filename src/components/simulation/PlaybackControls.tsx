@@ -39,6 +39,7 @@ export const PlaybackControls: React.FC = () => {
         </span>
         <input
           type="range"
+          aria-label="Simülasyon ilerlemesi"
           min={0}
           max={1}
           step={0.005}
@@ -50,7 +51,7 @@ export const PlaybackControls: React.FC = () => {
             }
           }}
           disabled={!isPlayable}
-          className="flex-1 h-2 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-chem-transition disabled:opacity-40"
+          className="touch-target min-w-0 flex-1 h-10 bg-slate-950 rounded-lg appearance-none cursor-pointer accent-chem-transition disabled:opacity-40"
         />
         <span className="text-[11px] font-mono text-slate-400 w-12">
           {progress >= 1 ? 'Bitti' : 'Adım'}
