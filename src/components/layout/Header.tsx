@@ -1,15 +1,25 @@
 import React from 'react';
 import { useUIStore } from '../../store/useUIStore';
 import { useChemistryStore } from '../../store/useChemistryStore';
+import { useNavigationStore } from '../../store/useNavigationStore';
+import { getLaboratoryPath, resolveRoute } from '../../navigation/routes';
 import { FlaskConical, Sparkles, Layers } from 'lucide-react';
 
 export const Header: React.FC = () => {
   const { viewMode, setViewMode } = useUIStore();
+  const pathname = useNavigationStore(state => state.pathname);
+  const navigate = useNavigationStore(state => state.navigate);
+  const mode = resolveRoute(pathname).mode;
   const {
     scenarios,
     activeScenario,
     loadScenarioById
   } = useChemistryStore();
+
+  const selectScenario = (scenarioId: string) => {
+    loadScenarioById(scenarioId);
+    navigate(getLaboratoryPath(mode, scenarioId));
+  };
 
   return (
     <header className="h-14 bg-slate-900 border-b border-slate-700 px-4 flex items-center justify-between select-none z-10">
@@ -20,7 +30,7 @@ export const Header: React.FC = () => {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="font-mono font-bold text-base text-slate-50 tracking-wide">
+            <h1 id="route-heading" tabIndex={-1} className="font-mono font-bold text-base text-slate-50 tracking-wide outline-none">
               ChemLab
             </h1>
             <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-400">
@@ -34,7 +44,7 @@ export const Header: React.FC = () => {
       </div>
 
       {/* Core Scenarios Quick Selector (Strict 5 Scenarios) */}
-      <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded border border-slate-700">
+      <div className="flex min-w-0 items-center gap-1.5 overflow-x-auto bg-slate-950 p-1 rounded border border-slate-700">
         <span className="text-[11px] font-mono text-slate-400 px-2 flex items-center gap-1">
           <Sparkles className="w-3.5 h-3.5 text-chem-alkaline" />
           Senaryolar:
@@ -45,7 +55,7 @@ export const Header: React.FC = () => {
             <button
               id={`scenario-btn-${sc.id}`}
               key={sc.id}
-              onClick={() => loadScenarioById(sc.id)}
+              onClick={() => selectScenario(sc.id)}
               className={`h-8 px-2.5 rounded font-mono text-xs font-semibold transition-colors flex items-center justify-center touch-target ${
                 isActive
                   ? 'bg-slate-800 text-slate-50 border border-chem-highlight shadow-sm'

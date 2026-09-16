@@ -8,19 +8,19 @@ import { SimulationModal } from '../simulation/SimulationModal';
 
 export const AppLayout: React.FC = () => {
   return (
-    <div className="flex flex-col h-screen w-screen bg-slate-950 text-slate-50 overflow-hidden select-none">
+    <div className="flex flex-col h-full min-h-0 w-full bg-slate-950 text-slate-50 overflow-auto lg:overflow-hidden select-none">
       {/* Top Application Header */}
       <Header />
 
       {/* Main 2-Column Split: 62% Left (Periodic Table) / 38% Right (Simulation & Theory) */}
-      <main className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 lg:overflow-hidden">
         {/* Left Column: 18-column Periodic Table (62% width) */}
-        <section className="w-[62%] h-full border-r border-slate-700 flex flex-col min-w-0">
+        <section className="w-full lg:w-[60%] min-h-screen lg:min-h-0 lg:h-full border-r border-slate-700 flex flex-col min-w-0">
           <PeriodicTable />
         </section>
 
         {/* Right Column: Canvas Simulator + Controls + Live Theory (38% width) */}
-        <section className="w-[38%] h-full flex flex-col min-w-0 bg-slate-900">
+        <section className="w-full lg:w-[40%] min-h-screen lg:min-h-0 lg:h-full flex flex-col min-w-0 bg-slate-900">
           {/* Top Half: 2D Canvas Interactive Simulator */}
           <div className="h-[52%] w-full relative flex flex-col border-b border-slate-700 bg-slate-950">
             <SimulationCanvas />
@@ -34,7 +34,7 @@ export const AppLayout: React.FC = () => {
             <LiveInfoPanel />
           </div>
         </section>
-      </main>
+      </div>
 
       {/* Large-Scale Simulation & Animation Modal */}
       <SimulationModal />

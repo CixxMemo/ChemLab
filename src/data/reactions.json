@@ -76,6 +76,41 @@
     ]
   },
   {
+    "id": "hf",
+    "nameTR": "Hidrojen Florür",
+    "formula": "HF",
+    "reactantKeys": ["H", "F"],
+    "stoichiometry": [
+      { "symbol": "H", "count": 1 },
+      { "symbol": "F", "count": 1 }
+    ],
+    "bondType": "polar-covalent",
+    "deltaEN": 1.78,
+    "descriptionTR": "Hidrojen ve flor iki ametaldir; bir elektron çiftini ortaklaşa kullanarak polar kovalent bağ kurar. ΔEN = 1.78 olmasına rağmen yalnızca eşik değerine bakılarak bağ iyonik sınıflandırılmaz.",
+    "steps": [
+      {
+        "progressThreshold": 0.0,
+        "titleTR": "Başlangıç Durumu",
+        "descriptionTR": "Hidrojen ve flor atomları birbirine yaklaşır; her ikisi de ametaldir."
+      },
+      {
+        "progressThreshold": 0.4,
+        "titleTR": "Elektron Çiftinin Paylaşılması",
+        "descriptionTR": "Atomlar bir elektron çiftini ortaklaşa kullanarak kovalent bağ oluşturur."
+      },
+      {
+        "progressThreshold": 0.75,
+        "titleTR": "Polarite Oluşumu",
+        "descriptionTR": "Ortak elektron çifti daha elektronegatif olan flor atomuna yakın bulunur."
+      },
+      {
+        "progressThreshold": 1.0,
+        "titleTR": "Polar Kovalent Bağ",
+        "descriptionTR": "Hidrojen dubletine, flor oktetine ulaşır; HF bağı polar kovalenttir."
+      }
+    ]
+  },
+  {
     "id": "ch4",
     "nameTR": "Metan Gazı",
     "formula": "CH₄",
@@ -154,7 +189,7 @@
     "id": "inert_gas",
     "nameTR": "Soygaz Etkileşimi (Asal Kararlılık)",
     "formula": "Tepkime Yok (no-bond)",
-    "reactantKeys": ["He", "Ne", "Ar", "Kr", "Xe", "Rn"],
+    "reactantKeys": ["He", "Ne"],
     "stoichiometry": [],
     "bondType": "no-bond",
     "deltaEN": null,

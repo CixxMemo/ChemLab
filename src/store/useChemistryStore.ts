@@ -7,14 +7,9 @@ import { resolveScenario, getAllScenarios } from '../lib/chemistry/stoichiometry
 const elementsMap = rawElements as Record<string, ElementData>;
 
 const MAX_SELECTED_ELEMENTS = 2;
-const INERT_SCENARIO_PAIR = ['He', 'Ne'] as const;
 
 function getScenarioSelectionKeys(scenario: ReactionScenario): readonly string[] {
-  const reactantKeys = scenario.id === 'inert_gas'
-    ? INERT_SCENARIO_PAIR
-    : scenario.reactantKeys;
-
-  return reactantKeys.slice(0, MAX_SELECTED_ELEMENTS);
+  return scenario.reactantKeys.slice(0, MAX_SELECTED_ELEMENTS);
 }
 
 function resolveSelectedElements(
