@@ -5,8 +5,9 @@ import { ElementCell } from './ElementCell';
 import { FilterBar } from './FilterBar';
 import { CategoryLegend } from './CategoryLegend';
 import { ElementData } from '../../types/chemistry';
+import { RevealPolicy } from '../../presentation/revealPolicy';
 
-export const PeriodicTable: React.FC<{ guided?: boolean }> = ({ guided = false }) => {
+export const PeriodicTable: React.FC<{ guided?: boolean; reveal?: RevealPolicy }> = ({ guided = false, reveal }) => {
   const { filterCategory, setFilterCategory } = useUIStore();
   const { elements, hoveredElement } = useChemistryStore();
   const [searchQuery, setSearchQuery] = useState('');
@@ -64,7 +65,7 @@ export const PeriodicTable: React.FC<{ guided?: boolean }> = ({ guided = false }
   return (
     <div className="flex flex-col h-full bg-slate-950 overflow-hidden select-none">
       {/* Search & Selection Bar */}
-      <FilterBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} guided={guided} />
+      <FilterBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} guided={guided} reveal={reveal} />
 
       {/* Category Legend & Filter Chips */}
       <CategoryLegend />

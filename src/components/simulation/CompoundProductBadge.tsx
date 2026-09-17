@@ -2,6 +2,7 @@ import React from 'react';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { formatReactionDetails } from '../../lib/chemistry/equationFormatter';
 import { FlaskConical, Ban, CheckCircle2 } from 'lucide-react';
+import { RevealPolicy } from '../../presentation/revealPolicy';
 
 /**
  * Presenter Component (SRP):
@@ -9,8 +10,12 @@ import { FlaskConical, Ban, CheckCircle2 } from 'lucide-react';
  * Turkish compound nomenclature, and bond classification in a shared information rail.
  * The rail stays in document flow so it never covers atoms on compact canvases.
  */
-export const CompoundProductBadge: React.FC = () => {
+export const CompoundProductBadge: React.FC<{ reveal?: RevealPolicy }> = ({ reveal }) => {
   const { activeScenario, bondAnalysis, selectedElements } = useChemistryStore();
+
+  if (reveal && !reveal.product) return <div className="relative z-20 shrink-0 border-t border-slate-700 bg-slate-900 px-3 py-3 text-sm text-slate-200" aria-label="Ürün gizli">
+    {selectedElements.map(element => element.symbol).join(' + ')} → Ürün gizli
+  </div>;
 
   const details = formatReactionDetails(activeScenario, bondAnalysis, selectedElements);
 
@@ -45,9 +50,9 @@ export const CompoundProductBadge: React.FC = () => {
           </span>
         </div>
 
-        <span className={`max-w-[190px] truncate px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${badgeColor}`}>
+        {(reveal?.bond ?? true) && <span className={`max-w-[190px] truncate px-2 py-0.5 rounded text-[10px] font-mono font-semibold border ${badgeColor}`}>
           {bondTag}
-        </span>
+        </span>}
 
         {/* Reaction equation */}
         <div className="flex min-w-0 items-baseline gap-2">

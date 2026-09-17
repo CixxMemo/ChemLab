@@ -206,8 +206,7 @@ export function formatReactionDetails(
 
   const isInert =
     effectiveBondType === 'inert' ||
-    effectiveBondType === 'no-bond' ||
-    activeScenario?.id === 'inert_gas';
+    effectiveBondType === 'no-bond';
 
   // 1. Inert / No reaction state
   if (isInert) {
@@ -278,15 +277,9 @@ export function formatReactionDetails(
   // Format the balanced reaction equation
   let equation = '';
 
-  // Special pre-configured curriculum reactions
-  if (activeScenario?.id === 'h2o') {
-    equation = '2 H₂ + O₂ → 2 H₂O';
-  } else if (activeScenario?.id === 'ch4') {
-    equation = 'C + 2 H₂ → CH₄';
-  } else if (activeScenario?.id === 'o2') {
-    equation = 'O + O → O₂';
-  } else if (activeScenario?.id === 'nacl') {
-    equation = 'Na + Cl → NaCl';
+  // Curated display notation is data, not a scenario-identity chemistry branch.
+  if (activeScenario?.displayEquationTR) {
+    equation = activeScenario.displayEquationTR;
   } else if (
     selectedElements.length >= 2 &&
     selectedElements[0].symbol === selectedElements[1].symbol

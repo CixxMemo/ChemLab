@@ -1,14 +1,16 @@
 import React from 'react';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { Search, X, CheckCircle2 } from 'lucide-react';
+import { RevealPolicy } from '../../presentation/revealPolicy';
 
 interface FilterBarProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   guided?: boolean;
+  reveal?: RevealPolicy;
 }
 
-export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuery, guided = false }) => {
+export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuery, guided = false, reveal }) => {
   const { selectedElements, deselectElement, activeScenario } = useChemistryStore();
 
   return (
@@ -65,7 +67,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
           </div>
         )}
 
-        {activeScenario && (
+        {activeScenario && (reveal?.product ?? true) && (
           <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-slate-950 border border-chem-ionic text-chem-ionic text-xs font-mono">
             <CheckCircle2 className="w-3 h-3" />
             <span>{activeScenario.formula}</span>

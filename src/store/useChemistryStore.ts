@@ -7,6 +7,15 @@ import { resolveScenario, getAllScenarios } from '../lib/chemistry/stoichiometry
 const elementsMap = rawElements as Record<string, ElementData>;
 
 const MAX_SELECTED_ELEMENTS = 2;
+const PLAYBACK_STEP = 0.1; // Each manual step advances one tenth of the timeline.
+const PROGRESS_EDGE_EPSILON = 1e-9; // Absorb floating-point drift only at timeline endpoints.
+
+function normalizeProgress(value: number): number {
+  const clamped = Math.max(0, Math.min(1, value));
+  if (clamped <= PROGRESS_EDGE_EPSILON) return 0;
+  if (clamped >= 1 - PROGRESS_EDGE_EPSILON) return 1;
+  return clamped;
+}
 
 function getScenarioSelectionKeys(scenario: ReactionScenario): readonly string[] {
   return scenario.reactantKeys.slice(0, MAX_SELECTED_ELEMENTS);
@@ -161,7 +170,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
   setPlaybackStatus: (status) => set({ playbackStatus: status }),
 
   setProgress: (progress) => {
-    const clamped = Math.max(0, Math.min(1, progress));
+    const clamped = normalizeProgress(progress);
     set({
       progress: clamped,
       playbackStatus: clamped >= 1 ? 'completed' : get().playbackStatus
@@ -169,7 +178,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
   },
 
   stepForward: () => {
-    const next = Math.min(1, get().progress + 0.1);
+    const next = normalizeProgress(get().progress + PLAYBACK_STEP);
     set({
       progress: next,
       playbackStatus: next >= 1 ? 'completed' : 'paused'
@@ -177,7 +186,7 @@ export const useChemistryStore = create<ChemistryState>((set, get) => ({
   },
 
   stepBackward: () => {
-    const prev = Math.max(0, get().progress - 0.1);
+    const prev = normalizeProgress(get().progress - PLAYBACK_STEP);
     set({
       progress: prev,
       playbackStatus: 'paused'

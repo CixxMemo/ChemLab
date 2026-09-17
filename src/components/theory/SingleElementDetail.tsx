@@ -2,6 +2,7 @@ import React from 'react';
 import { ElementData } from '../../types/chemistry';
 import { CATEGORY_COLORS } from '../../lib/canvas/atomRenderer';
 import { Atom, Layers, Sparkles, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { getSingleElementGuide } from '../../lib/chemistry/singleElementGuide';
 
 interface SingleElementDetailProps {
   element: ElementData;
@@ -24,43 +25,7 @@ export const SingleElementDetail: React.FC<SingleElementDetailProps> = ({ elemen
   const categoryColor = CATEGORY_COLORS[element.category] || '#4FA6E0';
   const categoryName = CATEGORY_NAMES_TR[element.category] || element.category;
   const shells = element.shells || [element.atomicNumber];
-  const isNoble = element.category === 'noble';
-  const isDuplet = element.atomicNumber <= 2;
-
-  // Pedagogical bonding rationale based on element type
-  let bondingTendency = '';
-  let recommendedPartners = '';
-
-  if (isNoble) {
-    bondingTendency = `Tam dolu dış elektron katmanına (${isDuplet ? '2 e⁻ Dublet' : '8 e⁻ Oktet'}) sahip olduğu için kimyasal olarak asaldır ve standart koşullarda bağ yapmaz.`;
-    recommendedPartners = 'Diğer soygazlarla etkileşimini görmek için Helyum veya Neon seçebilirsiniz.';
-  } else if (element.category === 'alkali') {
-    bondingTendency = `1 değerlik elektronunu vererek +1 yüklü (${element.symbol}⁺) kararlı katyon oluşturur ve bir alt katmandaki soygaz oktetine ulaşır.`;
-    recommendedPartners = 'Klor (Cl), Flor (F) veya Oksijen (O) seçerek İyonik Bağ oluşturabilirsiniz.';
-  } else if (element.category === 'alkaline') {
-    bondingTendency = `2 değerlik elektronunu vererek +2 yüklü (${element.symbol}²⁺) kararlı katyon oluşturur ve alt katmandaki oktet kararlılığına ulaşır.`;
-    recommendedPartners = 'Oksijen (O) veya Klor (Cl) seçerek İyonik Bağ oluşturabilirsiniz.';
-  } else if (element.category === 'halogen') {
-    bondingTendency = `7 değerlik elektronuna sahiptir. Kararlı oktet yapısına (8 e⁻) ulaşmak için 1 elektron alma (${element.symbol}⁻ anyonu) veya 1 elektron ortaklaşma eğilimindedir.`;
-    recommendedPartners = 'Sodyum (Na) veya Hidrojen (H) seçerek İyonik veya Polar Kovalent bağ oluşturabilirsiniz.';
-  } else if (element.category === 'nonmetal') {
-    if (element.symbol === 'H') {
-      bondingTendency = '1 elektrona sahiptir. Helyum dublet kararlılığına (2 e⁻) ulaşmak için 1 elektron ortaklaşır veya iyonlaşır.';
-      recommendedPartners = 'Oksijen (O), Karbon (C) veya Klor (Cl) seçebilirsiniz.';
-    } else if (element.symbol === 'C') {
-      bondingTendency = '4 değerlik elektronuna sahiptir. 4 kovalent bağ oluşturarak oktetini tamamlar.';
-      recommendedPartners = 'Hidrojen (H) veya Oksijen (O) seçebilirsiniz.';
-    } else {
-      bondingTendency = `${element.valanceElectrons ?? '-'} değerlik elektronuna sahiptir. Elektron alarak veya ortaklaşarak oktet tamamlama eğilimindedir.`;
-      recommendedPartners = 'Hidrojen (H), Sodyum (Na) veya Oksijen (O) seçebilirsiniz.';
-    }
-  } else if (element.category === 'transition' || element.category === 'post-transition') {
-    bondingTendency = `Metalik özellik gösterir. Değerlik elektronlarını vererek pozitif yüklü iyon oluşturma eğilimindedir.`;
-    recommendedPartners = 'Klor (Cl) veya Oksijen (O) seçebilirsiniz.';
-  } else {
-    bondingTendency = `Periyodik tabloda ${element.period}. periyot, ${element.group}. grupta yer alır.`;
-    recommendedPartners = 'Ametaller veya metaller ile reaksiyonunu test edebilirsiniz.';
-  }
+  const { bondingTendency, recommendedPartners } = getSingleElementGuide(element);
 
   const shellNames = ['K', 'L', 'M', 'N', 'O', 'P', 'Q'];
 

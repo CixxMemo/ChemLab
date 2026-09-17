@@ -66,7 +66,7 @@ Durum işaretleri: `(x)` doğrulanarak tamamlandı; `( )` kabul koşulları hen�
 
 **Faz kabulü:** On görev bitirilebilir; sayfa yenilendiğinde öğrenci ilerlemesi korunur; cihazlar arası eşitlenme vaat edilmez.
 
-### ( ) Faz 4 — Öğretmen sunum deneyimi
+### (x) Faz 4 — Öğretmen sunum deneyimi
 
 - **4.1 — Altı hazır ders akışı oluştur:** Her konuda hedef, başlangıç sorusu, önerilen deney, tahmin anı, açıklama anı, kavram yanılgısı ve çıkış bileti sıralı olarak sunulsun.
 - **4.2 — Öğretmen perdesini uygula:** Bağ türü, ürün formülü, ΔEN, oktet sonucu ve açıklama ayrı aşamalarda açılabilsin. “Tahmin görünümü” ve “cevapları göster” hazır durumları bulunsun. Perdeleme tüm simülasyon yüzeylerinde tutarlı olsun.
@@ -75,12 +75,12 @@ Durum işaretleri: `(x)` doğrulanarak tamamlandı; `( )` kabul koşulları hen�
 
 **Faz kabulü:** Öğretmen sıfır kurulumla hazır bir dersi açıp anlatımı sürdürebilir; cevaplar öğretmen açmadan görünmez; bağlantı farklı tarayıcıda doğru deneyi açar.
 
-### ( ) Faz 5 — Ürün kalitesi ve tek seferlik MVP çıkış kapısı
+### (x) Faz 5 — Ürün kalitesi ve tek seferlik MVP çıkış kapısı
 
-- **5.1 — Otomatik testleri tamamla:** İçerik–deney bağlantıları, görev değerlendirmesi, tahmin akışı, perde politikası, yerel ilerleme ve geçersiz bağlantılar test edilsin. `/lib/chemistry/` veya `/lib/canvas/` altına eklenen her saf fonksiyonun yanında sınır değerlerini kapsayan Vitest testi bulunsun.
-- **5.2 — Tarayıcı uçtan uca kontrol yap:** Öğrenci ve öğretmen yolları; 0%, 50% ve 100% oynatma; H–F, Na–Cl ve He–Ne; mobil, tablet ve projeksiyon boyutları; yalnız klavye ve dokunmatik kullanım doğrulansın. Canvas bilgisinin metinsel karşılığı bulunsun. Yakınlaştırmayı engelleyen viewport ayarı erişilebilirlik kapsamında düzeltilsin.
-- **5.3 — Mimari öz denetimi uygula:** Kimya doğrusu UI zaman çizgisinden türetilmeyecek; yeni sembol-özel domain koşulu, molekül-özel çizim fonksiyonu veya paylaşılan değişken durumlu renderer eklenmeyecek. Sunum, öğrenme oturumu, yerel ilerleme ve kimya durumu ayrı sorumluluklarda kalacak. Tasarım `.agents/agents.md` kurallarına uyacak.
-- **5.4 — Çıkış ölçütlerini kapat:** `npm test` ve `npm run build` başarılı olacak; mevcut 39 test korunacak. Test raporu gerçek komut çıktısını içerecek. Yarım kalmış özellik MVP işlevi gibi gösterilmeyecek.
+- (x) **5.1 — Otomatik testleri tamamla:** İçerik–deney bağlantıları, görev değerlendirmesi, tahmin akışı, perde politikası, yerel ilerleme ve geçersiz bağlantılar test edilsin. `/lib/chemistry/` veya `/lib/canvas/` altına eklenen her saf fonksiyonun yanında sınır değerlerini kapsayan Vitest testi bulunsun.
+- (x) **5.2 — Tarayıcı uçtan uca kontrol yap:** Öğrenci ve öğretmen yolları; 0%, 50% ve 100% oynatma; H–F, Na–Cl ve He–Ne; mobil, tablet ve projeksiyon boyutları; yalnız klavye ve dokunmatik kullanım doğrulansın. Canvas bilgisinin metinsel karşılığı bulunsun. Yakınlaştırmayı engelleyen viewport ayarı erişilebilirlik kapsamında düzeltilsin.
+- (x) **5.3 — Mimari öz denetimi uygula:** Kimya doğrusu UI zaman çizgisinden türetilmeyecek; yeni sembol-özel domain koşulu, molekül-özel çizim fonksiyonu veya paylaşılan değişken durumlu renderer eklenmeyecek. Sunum, öğrenme oturumu, yerel ilerleme ve kimya durumu ayrı sorumluluklarda kalacak. Tasarım `.agents/agents.md` kurallarına uyacak.
+- (x) **5.4 — Çıkış ölçütlerini kapat:** `npm test` ve `npm run build` başarılı olacak; mevcut 39 test korunacak. Test raporu gerçek komut çıktısını içerecek. Yarım kalmış özellik MVP işlevi gibi gösterilmeyecek. Doğrulama: [`EDUCATION_MVP_EXIT_REPORT.md`](EDUCATION_MVP_EXIT_REPORT.md).
 
 ## Tamamlanma tanımı ve kapsam dışı işler
 

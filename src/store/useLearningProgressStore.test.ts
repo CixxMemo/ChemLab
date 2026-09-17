@@ -56,4 +56,21 @@ describe('versioned local learning progress', () => {
     useLearningProgressStore.getState().clearProgress();
     expect(saved.has(PROGRESS_STORAGE_KEY)).toBe(false);
   });
+
+  it('discards an incompatible old progress schema', async () => {
+    const saved = new Map<string, string>();
+    saved.set(PROGRESS_STORAGE_KEY, JSON.stringify({
+      state: { completedTopicIds: ['iyonik-bag'], completedTaskIds: ['iyonik-cift'], questionResults: {} },
+      version: 0
+    }));
+    vi.stubGlobal('document', {});
+    vi.stubGlobal('window', { localStorage: {
+      getItem: (key: string) => saved.get(key) ?? null,
+      setItem: (key: string, value: string) => { saved.set(key, value); },
+      removeItem: (key: string) => { saved.delete(key); }
+    } });
+    await useLearningProgressStore.persist.rehydrate();
+    expect(useLearningProgressStore.getState().completedTopicIds).toEqual([]);
+    expect(useLearningProgressStore.getState().completedTaskIds).toEqual([]);
+  });
 });

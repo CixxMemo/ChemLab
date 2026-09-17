@@ -41,7 +41,7 @@ export const learningTopics: readonly LearningTopic[] = [
     id: 'degerlik-oktet', title: 'Değerlik, dublet ve oktet',
     objective: 'Dış katman elektronlarını ve dublet/oktet hedeflerini açıklar.',
     summary: 'Değerlik elektronları en dış katmandadır. Hidrojen ve helyum için iki, birçok ana grup atomu için sekiz dış elektron kararlılık hedefidir.',
-    prerequisiteId: 'periyodik-tablo', experimentIds: ['h2o', 'inert_gas'],
+    prerequisiteId: 'periyodik-tablo', experimentIds: ['h2o', 'inert_gas', 'nacl'],
     misconception: 'Helyumun iki değerlik elektronu olması onu 2A grubu yapmaz; helyum soygazdır.',
     source: SOURCE, checkedAt: CHECKED_AT,
     questions: [
@@ -82,7 +82,7 @@ export const learningTopics: readonly LearningTopic[] = [
     id: 'kovalent-bag', title: 'Kovalent bağ ve paylaşım',
     objective: 'Ametallerin ortak elektron kullanmasını ve bağ polaritesini ayırt eder.',
     summary: 'İki ametal elektron çiftlerini paylaşır. Paylaşım eşit değilse bağ polar, yaklaşık eşitse apolar kovalent olarak yorumlanır.',
-    prerequisiteId: 'iyonik-bag', experimentIds: ['hf', 'o2', 'h2o'],
+    prerequisiteId: 'iyonik-bag', experimentIds: ['hf', 'o2', 'h2o', 'ch4'],
     misconception: 'Bir bağın polaritesi ile bütün molekülün polaritesi aynı soru değildir.',
     source: SOURCE, checkedAt: CHECKED_AT,
     questions: [

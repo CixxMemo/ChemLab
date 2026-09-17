@@ -1,11 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
-import { CanvasBohrEngine, defaultBohrEngine } from './CanvasBohrEngine';
-import { DebugWireframeEngine, debugWireframeEngine } from './DebugWireframeEngine';
+import { CanvasBohrEngine } from './CanvasBohrEngine';
+import { DebugWireframeEngine } from './DebugWireframeEngine';
 import { IRenderEngine, RenderState } from './IRenderEngine';
 
 describe('IRenderEngine DIP Implementations', () => {
   const createMockContext = () => {
-    const mockProps: Record<string, any> = {
+    const mockProps: Record<string, unknown> = {
       canvas: { width: 400, height: 300 }
     };
     return new Proxy(mockProps, {
@@ -26,15 +26,14 @@ describe('IRenderEngine DIP Implementations', () => {
     rotation: 1.2,
     flashProgress: 0,
     scenario: null,
+    bondAnalysis: null,
     elementsMap: {},
     selectedElements: []
   };
 
   it('allows polymorphic substitution between CanvasBohrEngine and DebugWireframeEngine (LSP & DIP)', () => {
     const engines: IRenderEngine[] = [
-      defaultBohrEngine,
       new CanvasBohrEngine(),
-      debugWireframeEngine,
       new DebugWireframeEngine()
     ];
 
@@ -47,6 +46,19 @@ describe('IRenderEngine DIP Implementations', () => {
       // Both engines implement render without throwing
       expect(() => engine.render(ctx, dummyState)).not.toThrow();
     });
+  });
+
+  it('keeps dimensions private to each renderer instance', () => {
+    const first = new DebugWireframeEngine();
+    const second = new DebugWireframeEngine();
+    first.resize(500, 400, 1);
+    second.resize(900, 700, 1);
+    const firstContext = createMockContext();
+    const secondContext = createMockContext();
+    first.render(firstContext, dummyState);
+    second.render(secondContext, dummyState);
+    expect(firstContext.strokeRect).toHaveBeenCalledWith(10, 10, 480, 380);
+    expect(secondContext.strokeRect).toHaveBeenCalledWith(10, 10, 880, 680);
   });
 
   it('DebugWireframeEngine draws wireframe elements with progress feedback', () => {

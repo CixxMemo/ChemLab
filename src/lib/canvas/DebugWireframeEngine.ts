@@ -36,5 +36,3 @@ export class DebugWireframeEngine implements IRenderEngine {
     ctx.restore();
   }
 }
-
-export const debugWireframeEngine = new DebugWireframeEngine();

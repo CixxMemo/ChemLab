@@ -1,17 +1,17 @@
 import { useEffect, useRef } from 'react';
-import { IRenderEngine } from './IRenderEngine';
-import { defaultBohrEngine } from './CanvasBohrEngine';
+import { IRenderEngine, RenderBondAnalysis } from './IRenderEngine';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { IAtomRenderData, PlaybackStatus, ReactionScenario } from '../../types/chemistry';
 
 export interface UseCanvasRendererOptions {
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   containerRef: React.RefObject<HTMLDivElement | null>;
-  engine?: IRenderEngine;
+  engine: IRenderEngine;
   active?: boolean;
 
   // Optional manual overrides for dependency injection / headless testing
   scenario?: ReactionScenario | null;
+  bondAnalysis?: RenderBondAnalysis | null;
   elements?: Record<string, IAtomRenderData>;
   selectedElements?: IAtomRenderData[];
   progress?: number;
@@ -34,9 +34,10 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
   const {
     canvasRef,
     containerRef,
-    engine = defaultBohrEngine,
+    engine,
     active = true,
     scenario = chemStore.activeScenario,
+    bondAnalysis = chemStore.bondAnalysis,
     elements = chemStore.elements,
     selectedElements = chemStore.selectedElements,
     progress = chemStore.progress,
@@ -50,6 +51,7 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
   const playbackStatusRef = useRef(playbackStatus);
   const playbackSpeedRef = useRef(playbackSpeed);
   const scenarioRef = useRef(scenario);
+  const bondAnalysisRef = useRef(bondAnalysis);
   const elementsRef = useRef(elements);
   const selectedElementsRef = useRef(selectedElements);
 
@@ -68,6 +70,10 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
   useEffect(() => {
     scenarioRef.current = scenario;
   }, [scenario]);
+
+  useEffect(() => {
+    bondAnalysisRef.current = bondAnalysis;
+  }, [bondAnalysis]);
 
   useEffect(() => {
     elementsRef.current = elements;
@@ -90,6 +96,7 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
     let animationFrameId: number;
     let rotationAngle = 0;
     let lastTimestamp = performance.now();
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
     const handleResize = () => {
       const rect = container.getBoundingClientRect();
@@ -115,7 +122,7 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
       lastTimestamp = currentTimestamp;
 
       // Update rotation angle for Bohr orbits
-      rotationAngle += deltaSec * 1.5;
+      if (!reduceMotion) rotationAngle += deltaSec * 1.5;
 
       // Advance timeline if playing
       if (playbackStatusRef.current === 'playing') {
@@ -135,6 +142,7 @@ export function useCanvasRenderer(options: UseCanvasRendererOptions) {
         rotation: rotationAngle,
         flashProgress: 0,
         scenario: scenarioRef.current,
+        bondAnalysis: bondAnalysisRef.current,
         elementsMap: elementsRef.current,
         selectedElements: selectedElementsRef.current
       });

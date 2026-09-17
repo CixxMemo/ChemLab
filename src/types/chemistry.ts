@@ -103,6 +103,7 @@ export interface ReactionScenario {
   bondType: BondType;
   deltaEN: number | null;
   descriptionTR: string;
+  displayEquationTR?: string; // Curated classroom notation; never used to resolve a bond.
   steps: ReactionStep[];
 }
 

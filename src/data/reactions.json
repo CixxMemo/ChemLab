@@ -3,6 +3,7 @@
     "id": "nacl",
     "nameTR": "Sodyum Klorür (Yemek Tuzu)",
     "formula": "NaCl",
+    "displayEquationTR": "Na + Cl → NaCl",
     "reactantKeys": ["Na", "Cl"],
     "stoichiometry": [
       { "symbol": "Na", "count": 1 },
@@ -41,6 +42,7 @@
     "id": "h2o",
     "nameTR": "Su Molekülü",
     "formula": "H₂O",
+    "displayEquationTR": "2 H₂ + O₂ → 2 H₂O",
     "reactantKeys": ["H", "O"],
     "stoichiometry": [
       { "symbol": "H", "count": 2 },
@@ -114,6 +116,7 @@
     "id": "ch4",
     "nameTR": "Metan Gazı",
     "formula": "CH₄",
+    "displayEquationTR": "C + 2 H₂ → CH₄",
     "reactantKeys": ["C", "H"],
     "stoichiometry": [
       { "symbol": "C", "count": 1 },
@@ -152,6 +155,7 @@
     "id": "o2",
     "nameTR": "Oksijen Gazı",
     "formula": "O₂",
+    "displayEquationTR": "O + O → O₂",
     "reactantKeys": ["O", "O"],
     "stoichiometry": [
       { "symbol": "O", "count": 2 }

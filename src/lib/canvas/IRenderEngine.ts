@@ -1,10 +1,13 @@
-import { IAtomRenderData, ReactionScenario } from '../../types/chemistry';
+import { BondAnalysis, IAtomRenderData, ReactionScenario } from '../../types/chemistry';
+
+export type RenderBondAnalysis = Pick<BondAnalysis, 'bondType' | 'sharedElectronPairs' | 'cationCharge' | 'anionCharge'>;
 
 export interface RenderState {
   progress: number; // 0.0 to 1.0
   rotation: number; // continuous orbit rotation angle in radians
   flashProgress: number; // 0.0 to 1.0 for bond flash effects
   scenario: ReactionScenario | null;
+  bondAnalysis: RenderBondAnalysis | null;
   elementsMap: Record<string, IAtomRenderData>;
   selectedElements: IAtomRenderData[];
 }

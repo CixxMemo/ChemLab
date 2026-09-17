@@ -4,9 +4,13 @@ import { ElectronegativityBar } from './ElectronegativityBar';
 import { OctetStatusBadge } from './OctetStatusBadge';
 import { SingleElementDetail } from './SingleElementDetail';
 import { BookOpen, Info, CheckCircle, ArrowRight, Atom } from 'lucide-react';
+import { RevealPolicy } from '../../presentation/revealPolicy';
+import { TeacherTheoryPanel } from '../teacher/TeacherTheoryPanel';
 
-export const LiveInfoPanel: React.FC = () => {
+export const LiveInfoPanel: React.FC<{ reveal?: RevealPolicy }> = ({ reveal }) => {
   const { activeScenario, bondAnalysis, selectedElements, progress } = useChemistryStore();
+
+  if (reveal) return <TeacherTheoryPanel reveal={reveal} analysis={bondAnalysis} scenario={activeScenario} />;
 
   if (!activeScenario && selectedElements.length === 0) {
     return (

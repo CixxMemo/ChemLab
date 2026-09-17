@@ -9,7 +9,9 @@ describe('guided task catalog', () => {
     expect(learningTasks).toHaveLength(10);
     expect(new Set(learningTasks.map(task => task.id)).size).toBe(10);
     for (const task of learningTasks) {
-      expect(learningTopics.some(topic => topic.id === task.topicId)).toBe(true);
+      const topic = learningTopics.find(item => item.id === task.topicId);
+      expect(topic).toBeDefined();
+      expect(topic?.experimentIds).toContain(task.scenarioId);
       expect(scenarios.some(scenario => scenario.id === task.scenarioId)).toBe(true);
       expect(task.options).toHaveLength(3);
       expect(task.successExplanation.length).toBeGreaterThan(0);

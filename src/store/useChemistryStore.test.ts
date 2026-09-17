@@ -31,4 +31,14 @@ describe('useChemistryStore.loadScenarioById', () => {
     useChemistryStore.getState().loadScenarioById('nacl');
     expect(useChemistryStore.getState().playbackStatus).toBe('playing');
   });
+
+  it('reaches exact timeline endpoints after ten manual steps', () => {
+    useChemistryStore.getState().loadScenarioById('nacl', { autoplay: false });
+    for (let index = 0; index < 10; index++) useChemistryStore.getState().stepForward();
+    expect(useChemistryStore.getState().progress).toBe(1);
+    expect(useChemistryStore.getState().playbackStatus).toBe('completed');
+    for (let index = 0; index < 10; index++) useChemistryStore.getState().stepBackward();
+    expect(useChemistryStore.getState().progress).toBe(0);
+    expect(useChemistryStore.getState().playbackStatus).toBe('paused');
+  });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getLaboratoryPath, getModePath, getTaskListPath, getTaskPath, getTopicPath, resolveRoute } from './routes';
+import { getLaboratoryPath, getModePath, getSharedExperimentPath, getTaskListPath, getTaskPath, getTopicPath, resolveRoute } from './routes';
 
 describe('client-side routes', () => {
   it('opens the landing page at the root', () => {
@@ -28,5 +28,12 @@ describe('client-side routes', () => {
     expect(resolveRoute(getTaskListPath())).toEqual({ kind: 'task-list', mode: 'student' });
     expect(resolveRoute(getTaskPath('hf-yanilgisi'))).toEqual({ kind: 'task', mode: 'student', taskId: 'hf-yanilgisi' });
     expect(resolveRoute('/ogretmen/gorevler')).toEqual({ kind: 'not-found', mode: 'free' });
+  });
+
+  it('routes shared experiments to the student prediction flow', () => {
+    expect(resolveRoute(getSharedExperimentPath('hf'))).toEqual({ kind: 'shared-experiment', mode: 'student', scenarioId: 'hf', taskId: null });
+    expect(resolveRoute(getSharedExperimentPath('hf', 'hf-yanilgisi'))).toEqual({ kind: 'shared-experiment', mode: 'student', scenarioId: 'hf', taskId: 'hf-yanilgisi' });
+    expect(resolveRoute('/ogrenci/rehberli-deney/hf/gorev/')).toEqual({ kind: 'not-found', mode: 'free' });
+    expect(resolveRoute('/ogrenci/rehberli-deney/hf/gorev/%')).toEqual({ kind: 'not-found', mode: 'free' });
   });
 });

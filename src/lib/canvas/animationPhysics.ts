@@ -1,21 +1,34 @@
 import { easeInOutCubic, easeOutCubic, easeOutBack, lerp } from './easing';
 import { IAtomRenderData, ReactionScenario } from '../../types/chemistry';
 import { drawNucleus, drawBohrShells, drawIonBadge, drawBondLine } from './atomRenderer';
+import { RenderBondAnalysis, RenderState } from './IRenderEngine';
 
-export interface SceneState {
-  progress: number; // 0 to 1
-  rotation: number; // continuously incrementing angle for electron orbits
-  flashProgress: number; // for bond flash
-  scenario: ReactionScenario | null;
-  elementsMap: Record<string, IAtomRenderData>;
-  selectedElements: IAtomRenderData[];
+const MAX_RENDERED_BOND_LINES = 3; // Canvas visual limit for a shared-pair bond.
+const MIN_RENDERED_BOND_LINES = 1; // A resolved covalent bond needs one visible line.
+const BOND_LINE_SPACING = 6; // px between parallel lines around the atom-centre axis.
+const CHARGE_SUPERSCRIPTS: Record<string, string> = {
+  '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
+  '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+};
+
+export function formatIonBadge(symbol: string, charge: number | undefined, sign: '⁺' | '⁻'): string {
+  const magnitude = charge && charge > 1
+    ? String(charge).replace(/\d/g, digit => CHARGE_SUPERSCRIPTS[digit] ?? digit)
+    : '';
+  return `${symbol}${magnitude}${sign}`;
+}
+
+export function getGenericBondOffsets(analysis: RenderBondAnalysis | null): number[] {
+  if (!analysis || analysis.bondType === 'ionic' || analysis.bondType === 'inert' || analysis.bondType === 'no-bond') return [];
+  const count = Math.min(MAX_RENDERED_BOND_LINES, Math.max(MIN_RENDERED_BOND_LINES, Math.trunc(analysis.sharedElectronPairs ?? MIN_RENDERED_BOND_LINES)));
+  return Array.from({ length: count }, (_, index) => (index - (count - 1) / 2) * BOND_LINE_SPACING);
 }
 
 export function renderScene(
   ctx: CanvasRenderingContext2D,
   width: number,
   height: number,
-  state: SceneState
+  state: RenderState
 ) {
   // Clear canvas with Slate-950 background
   ctx.fillStyle = '#0B0F17';
@@ -24,7 +37,7 @@ export function renderScene(
   // Draw subtle grid pattern (Muted Scientific grid)
   drawScientificGrid(ctx, width, height);
 
-  const { scenario, progress, rotation, selectedElements, elementsMap } = state;
+  const { scenario, bondAnalysis, progress, rotation, selectedElements, elementsMap } = state;
 
   if (selectedElements.length === 0) {
     drawIdleMessage(ctx, width, height);
@@ -40,7 +53,7 @@ export function renderScene(
   }
 
   if (!scenario) {
-    renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, null);
+    renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, null, bondAnalysis);
     return;
   }
 
@@ -61,7 +74,7 @@ export function renderScene(
       renderInertScenario(ctx, cx, cy, progress, rotation, selectedElements, elementsMap);
       break;
     default:
-      renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, scenario);
+      renderGenericPairScenario(ctx, cx, cy, progress, rotation, selectedElements, scenario, bondAnalysis);
       break;
   }
 }
@@ -465,7 +478,8 @@ function renderGenericPairScenario(
   t: number,
   rotation: number,
   selectedElements: IAtomRenderData[],
-  scenario?: ReactionScenario | null
+  scenario: ReactionScenario | null,
+  analysis: RenderBondAnalysis | null
 ) {
   const elemA = selectedElements[0];
   const elemB = selectedElements[1] || selectedElements[0];
@@ -480,28 +494,25 @@ function renderGenericPairScenario(
   drawBohrShells(ctx, bx, cy, elemB.shells, 34, 20, -rotation);
   drawNucleus(ctx, bx, cy, elemB, 24);
 
-  if (t > 0.65) {
-    const flash = (t - 0.65) / 0.35;
-    const isIonic = scenario?.bondType === 'ionic';
-    const isTriple = elemA.symbol === 'N' && elemB.symbol === 'N';
+  if (t > 0.65) drawGenericBondOutcome(ctx, ax, bx, cy, (t - 0.65) / 0.35, elemA, elemB, scenario, analysis);
+}
 
-    if (isIonic) {
-      const isAElectroNeg = (elemA.electronegativity ?? 0) >= (elemB.electronegativity ?? 0);
-      const donor = isAElectroNeg ? elemB : elemA;
-      const acceptor = isAElectroNeg ? elemA : elemB;
-      const donorX = isAElectroNeg ? bx : ax;
-      const acceptorX = isAElectroNeg ? ax : bx;
-
-      drawBondLine(ctx, ax, cy, bx, cy, flash, 'ionic');
-      drawIonBadge(ctx, donorX, cy - 80, `${donor.symbol}⁺`, 'cation');
-      drawIonBadge(ctx, acceptorX, cy - 80, `${acceptor.symbol}⁻`, 'anion');
-    } else if (isTriple) {
-      drawBondLine(ctx, ax, cy - 6, bx, cy - 6, flash, 'covalent');
-      drawBondLine(ctx, ax, cy, bx, cy, flash, 'covalent');
-      drawBondLine(ctx, ax, cy + 6, bx, cy + 6, flash, 'covalent');
-      drawIonBadge(ctx, cx, cy - 78, 'N ≡ N (Üçlü Apolar Bağ)', 'partial');
-    } else {
-      drawBondLine(ctx, ax, cy, bx, cy, flash, 'covalent');
-    }
+function drawGenericBondOutcome(
+  ctx: CanvasRenderingContext2D,
+  ax: number, bx: number, cy: number, flash: number,
+  elemA: IAtomRenderData, elemB: IAtomRenderData,
+  scenario: ReactionScenario | null, analysis: RenderBondAnalysis | null
+): void {
+  if (analysis?.bondType === 'ionic') {
+    const donorIsA = scenario?.reactantKeys[0] === elemA.symbol;
+    const donor = donorIsA ? elemA : elemB;
+    const acceptor = donorIsA ? elemB : elemA;
+    drawBondLine(ctx, ax, cy, bx, cy, flash, 'ionic');
+    drawIonBadge(ctx, donorIsA ? ax : bx, cy - 80, formatIonBadge(donor.symbol, analysis.cationCharge, '⁺'), 'cation');
+    drawIonBadge(ctx, donorIsA ? bx : ax, cy - 80, formatIonBadge(acceptor.symbol, analysis.anionCharge, '⁻'), 'anion');
+    return;
   }
+  getGenericBondOffsets(analysis).forEach(offset => {
+    drawBondLine(ctx, ax, cy + offset, bx, cy + offset, flash, 'covalent');
+  });
 }

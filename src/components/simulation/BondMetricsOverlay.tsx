@@ -2,8 +2,9 @@ import React from 'react';
 import { useUIStore } from '../../store/useUIStore';
 import { useChemistryStore } from '../../store/useChemistryStore';
 import { Activity, ShieldCheck, Zap, Maximize2 } from 'lucide-react';
+import { RevealPolicy } from '../../presentation/revealPolicy';
 
-export const BondMetricsOverlay: React.FC = () => {
+export const BondMetricsOverlay: React.FC<{ reveal?: RevealPolicy }> = ({ reveal }) => {
   const { openAnimationModal } = useUIStore();
   const { activeScenario, bondAnalysis, selectedElements } = useChemistryStore();
 
@@ -39,14 +40,14 @@ export const BondMetricsOverlay: React.FC = () => {
   }
 
   return (
-    <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none z-10 select-none">
+    <div className="absolute top-3 left-3 right-3 z-30 flex items-center justify-between gap-2 pointer-events-none select-none">
       {/* Left: Reaction Formula Badge / Single Element */}
       {activeScenario || selectedElements.length > 0 ? (
         <>
           <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded shadow-sm">
             <Zap className="w-4 h-4 text-chem-electron" />
             <span className="font-mono font-bold text-sm text-slate-50">
-              {activeScenario
+              {activeScenario && (reveal?.product ?? true)
                 ? activeScenario.formula
                 : selectedElements.length === 1
                 ? `${selectedElements[0].symbol} (${selectedElements[0].nameTR}) • Z=${selectedElements[0].atomicNumber}`
@@ -55,7 +56,7 @@ export const BondMetricsOverlay: React.FC = () => {
           </div>
 
           {/* Center: Electronegativity Difference Badge or Position Info */}
-          <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded shadow-sm font-mono text-xs">
+          {(reveal?.deltaEN ?? true) && <div className="flex items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded shadow-sm font-mono text-xs">
             <Activity className="w-3.5 h-3.5 text-chem-transition" />
             {isSingleElement && singleElement ? (
               <>
@@ -72,14 +73,14 @@ export const BondMetricsOverlay: React.FC = () => {
                 </span>
               </>
             )}
-          </div>
+          </div>}
 
           {/* Right: Bond Classification Badge & Maximize Button */}
           <div className="flex items-center gap-1.5">
-            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded border font-mono text-xs font-semibold ${badgeColor}`}>
+            {(reveal?.bond ?? true) && <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded border font-mono text-xs font-semibold ${badgeColor}`}>
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{bondTypeLabel}</span>
-            </div>
+            </div>}
 
             <button
               onClick={openAnimationModal}

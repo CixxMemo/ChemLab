@@ -19,6 +19,3 @@ export class CanvasBohrEngine implements IRenderEngine {
     renderScene(ctx, w, h, state);
   }
 }
-
-// Export a default singleton instance for convenience, while allowing DI of fresh instances
-export const defaultBohrEngine = new CanvasBohrEngine();

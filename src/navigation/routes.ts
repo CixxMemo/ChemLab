@@ -7,6 +7,7 @@ export type AppRoute =
   | { kind: 'topic'; mode: 'student' | 'teacher'; topicId: string }
   | { kind: 'task-list'; mode: 'student' }
   | { kind: 'task'; mode: 'student'; taskId: string }
+  | { kind: 'shared-experiment'; mode: 'student'; scenarioId: string; taskId: string | null }
   | { kind: 'not-found'; mode: 'free' };
 
 const MODE_SLUGS = {
@@ -26,6 +27,7 @@ const EXPERIMENT_ROUTE = /^\/(?:(?<mode>ogrenci|ogretmen)\/)?deney\/(?<scenarioI
 const STUDENT_TOPIC_ROUTE = /^\/ogrenci\/konu\/(?<topicId>[a-z0-9_-]+)$/;
 const TEACHER_LESSON_ROUTE = /^\/ogretmen\/ders\/(?<topicId>[a-z0-9_-]+)$/;
 const STUDENT_TASK_ROUTE = /^\/ogrenci\/gorev\/(?<taskId>[a-z0-9_-]+)$/;
+const SHARED_EXPERIMENT_ROUTE = /^\/ogrenci\/rehberli-deney\/(?<scenarioId>[a-z0-9_-]+)(?:\/gorev\/(?<taskId>[a-z0-9_-]+))?$/;
 
 function parseMode(segment: string | undefined): ExperienceMode {
   const modes: Readonly<Record<string, ExperienceMode>> = {
@@ -45,6 +47,12 @@ export function resolveRoute(pathname: string): AppRoute {
   if (teacherLesson) return { kind: 'topic', mode: 'teacher', topicId: teacherLesson.groups?.topicId ?? '' };
   const studentTask = normalized.match(STUDENT_TASK_ROUTE);
   if (studentTask) return { kind: 'task', mode: 'student', taskId: studentTask.groups?.taskId ?? '' };
+  const sharedExperiment = normalized.match(SHARED_EXPERIMENT_ROUTE);
+  if (sharedExperiment) return {
+    kind: 'shared-experiment', mode: 'student',
+    scenarioId: sharedExperiment.groups?.scenarioId ?? '',
+    taskId: sharedExperiment.groups?.taskId ?? null
+  };
 
   const laboratoryMatch = normalized.match(LABORATORY_ROUTE);
   if (laboratoryMatch) {
@@ -77,6 +85,11 @@ export function getTaskListPath(): string {
 
 export function getTaskPath(taskId: string): string {
   return `/ogrenci/gorev/${taskId}`;
+}
+
+export function getSharedExperimentPath(scenarioId: string, taskId?: string): string {
+  const experimentPath = `/ogrenci/rehberli-deney/${scenarioId}`;
+  return taskId ? `${experimentPath}/gorev/${taskId}` : experimentPath;
 }
 
 export function getLaboratoryPath(mode: ExperienceMode, scenarioId?: string): string {
