@@ -36,8 +36,8 @@ export const SingleElementDetail: React.FC<SingleElementDetailProps> = ({ elemen
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div
-              className="w-10 h-10 rounded border flex items-center justify-center font-mono font-bold text-lg text-slate-50 shadow-sm"
-              style={{ backgroundColor: '#151C28', borderColor: categoryColor }}
+              className="w-10 h-10 rounded border flex items-center justify-center font-mono font-bold text-lg text-slate-50"
+              style={{ backgroundColor: 'rgb(var(--slate-900))', borderColor: categoryColor }}
             >
               {element.symbol}
             </div>

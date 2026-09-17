@@ -23,7 +23,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
           aria-label="Element ara"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Element ara (örn: Na, Sodyum, 11)..."
+          placeholder="Element ara…"
           className="w-full h-10 pl-8 pr-10 bg-slate-950 border border-slate-700 rounded text-xs text-slate-50 placeholder-slate-500 focus:outline-none focus:border-chem-transition font-sans"
         />
         {searchQuery && (
@@ -41,7 +41,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
       {/* Selected Element Chips */}
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-[11px] font-mono text-slate-400 hidden sm:inline">
-          Seçili Atomlar ({selectedElements.length}/2):
+          Atomlar
         </span>
         {selectedElements.length === 0 ? (
           <span className="text-xs text-slate-500 italic">Atom seçilmedi</span>
@@ -50,7 +50,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
             {selectedElements.map((el, i) => (
               <span
                 key={`${el.symbol}-${i}`}
-                className="inline-flex min-h-10 items-center gap-1.5 rounded border border-slate-700 bg-slate-800 py-0.5 pl-2 text-slate-50 font-mono text-xs"
+                className="inline-flex min-h-10 items-center gap-1.5 rounded border border-slate-700 bg-slate-800 py-0.5 px-2 text-slate-50 font-mono text-xs"
               >
                 <span className="font-bold text-chem-transition">{el.symbol}</span>
                 <span className="text-[10px] text-slate-400">({el.nameTR})</span>

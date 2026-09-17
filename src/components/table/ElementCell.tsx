@@ -20,7 +20,7 @@ export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gri
   const categoryColor = CATEGORY_COLORS[element.category] || '#4FA6E0';
 
   // Electronegativity heatmap background calculation
-  let customBg = '#151C28';
+  let customBg = 'rgb(var(--slate-900))';
   if (viewMode === 'electronegativity' && element.electronegativity !== null && element.electronegativity > 0) {
     // EN ranges between 0.7 (Fr) and 4.0 (F)
     const normalized = Math.min(1, Math.max(0, (element.electronegativity - 0.7) / 3.3));
@@ -37,18 +37,20 @@ export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gri
       data-symbol={element.symbol}
       onClick={() => selectElement(element)}
       disabled={locked}
+      aria-pressed={isSelected}
       onMouseEnter={() => setHoveredElement(element)}
       onMouseLeave={() => setHoveredElement(null)}
       style={{
         gridColumnStart: gridColumnStart,
         backgroundColor: customBg,
-        borderColor: isSelected ? '#FFFFFF' : isHovered ? categoryColor : '#263345',
+        borderColor: isSelected || isHovered ? categoryColor : 'rgb(var(--slate-700))',
       }}
       className={`
-        relative flex flex-col justify-between p-1 rounded transition-all duration-150
-        min-w-0 w-full min-h-[38px] sm:min-h-[44px] touch-target select-none border text-left
+        relative flex flex-col justify-between p-1 rounded-md transition-colors duration-150
+        min-w-0 w-full h-12 touch-target select-none border text-left
         ${isDimmed ? 'opacity-25 grayscale' : 'opacity-100 hover:scale-[1.03]'}
-        ${isSelected ? 'ring-2 ring-white ring-offset-1 ring-offset-slate-950 z-10 shadow-sharp-active' : 'z-0'}
+        ${viewMode === 'electronegativity' ? 'simulation-surface' : ''}
+        ${isSelected ? 'ring-2 ring-slate-300 ring-offset-1 ring-offset-slate-950 z-10' : 'z-0'}
       `}
       title={`${element.atomicNumber}. ${element.nameTR} (${element.symbol}) - EN: ${element.electronegativity}`}
     >
@@ -66,8 +68,8 @@ export const ElementCell: React.FC<ElementCellProps> = ({ element, isDimmed, gri
       {/* Center: Symbol */}
       <div className="text-center my-auto">
         <span
-          className="font-mono font-bold text-sm tracking-tight"
-          style={{ color: isSelected ? '#FFFFFF' : '#F8FAFC' }}
+          className="font-mono font-bold text-sm leading-none tracking-tight"
+          style={{ color: 'rgb(var(--slate-50))' }}
         >
           {element.symbol}
         </span>

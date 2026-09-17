@@ -13,10 +13,6 @@ interface LaboratoryPageProps {
 
 const DEFAULT_SCENARIO_ID = 'nacl'; // Preserve the existing NaCl first-open demonstration.
 
-const MODE_GUIDANCE = {
-  student: 'Öğrenci laboratuvarı: atomları seç, sonucu incele ve farklı çiftleri karşılaştır.',
-  teacher: 'Öğretmen laboratuvarı: oynatmayı durdurup adımlarla ilerleyerek sınıfa göster.'
-} as const;
 
 export const LaboratoryPage: React.FC<LaboratoryPageProps> = ({ mode, scenarioId }) => {
   const scenarios = useChemistryStore(state => state.scenarios);
@@ -38,7 +34,6 @@ export const LaboratoryPage: React.FC<LaboratoryPageProps> = ({ mode, scenarioId
 
   return (
     <div className="flex h-full min-h-0 flex-col">
-      {mode !== 'free' ? <p className="shrink-0 border-b border-slate-700 bg-slate-950 px-4 py-2 text-xs text-slate-300" role="status">{MODE_GUIDANCE[mode]}</p> : null}
       <AppLayout guided={mode === 'teacher'} presentationKey={mode === 'teacher' ? `lab:${scenarioId ?? DEFAULT_SCENARIO_ID}` : undefined} presentationScenarioId={mode === 'teacher' ? scenarioId ?? DEFAULT_SCENARIO_ID : undefined} />
     </div>
   );

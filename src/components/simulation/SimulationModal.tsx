@@ -137,7 +137,7 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
     >
       {/* Modal Dialog Window */}
       <div
-        className="relative w-full max-w-6xl h-[92vh] bg-slate-900 border border-slate-700 rounded-lg shadow-2xl flex flex-col overflow-hidden"
+        className="relative w-full max-w-6xl h-[92vh] bg-slate-900 border border-slate-700 rounded-lg flex flex-col overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Top Header Bar */}
@@ -181,7 +181,7 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
             </div>
 
             {/* Bond Type Badge */}
-            <div className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded border font-mono text-xs font-semibold ${badgeColor}`}>
+            <div className={`simulation-surface hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded border font-mono text-xs font-semibold ${badgeColor}`}>
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{bondTypeLabel}</span>
             </div>
@@ -225,11 +225,11 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
         </div>
 
         {/* Modal Center Area: Full Scale Canvas */}
-        <div ref={containerRef} className="relative flex-1 w-full bg-slate-950 overflow-hidden">
+        <div ref={containerRef} className="simulation-surface relative flex-1 w-full bg-slate-950 overflow-hidden">
           {/* Live Step Explanation Floating HUD */}
           {currentStep ? (
             <div className="absolute top-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md z-10 pointer-events-none">
-              <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded shadow-lg flex flex-col gap-1">
+              <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded flex flex-col gap-1">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-chem-transition">
                     <Info className="w-3.5 h-3.5 flex-shrink-0" />
@@ -246,7 +246,7 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
             </div>
           ) : isSingleElement && singleElement ? (
             <div className="absolute top-4 left-4 right-4 md:left-6 md:right-auto md:max-w-md z-10 pointer-events-none">
-              <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded shadow-lg flex flex-col gap-1.5">
+              <div className="bg-slate-900/90 backdrop-blur-sm border border-slate-700 p-3 rounded flex flex-col gap-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-chem-transition">
                     <Info className="w-3.5 h-3.5 flex-shrink-0" />
@@ -337,8 +337,8 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
                 disabled={!isPlayable}
                 className={`h-10 px-5 rounded font-mono text-xs font-bold flex items-center gap-2 transition-colors touch-target ${
                   playbackStatus === 'playing'
-                    ? 'bg-amber-600 hover:bg-amber-500 text-slate-950'
-                    : 'bg-chem-transition hover:bg-sky-400 text-slate-950'
+                    ? 'bg-amber-600 hover:bg-amber-500 text-[#0B0F17]'
+                    : 'bg-chem-transition hover:bg-sky-400 text-[#0B0F17]'
                 } disabled:opacity-40 disabled:hover:bg-chem-transition`}
                 title={playbackStatus === 'playing' ? 'Durdur' : 'Oynat (Boşluk Tuşu)'}
               >

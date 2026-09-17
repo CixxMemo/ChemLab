@@ -1,4 +1,5 @@
 import React from 'react';
+import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 import { useUIStore } from '../../store/useUIStore';
 
 export const CATEGORIES = [
@@ -17,13 +18,15 @@ export const CategoryLegend: React.FC = () => {
   const { filterCategory, setFilterCategory } = useUIStore();
 
   return (
-    <div className="flex flex-wrap items-center gap-1.5 py-1.5 px-3 bg-slate-900/60 border-b border-slate-700/80 select-none text-[11px]">
-      <span className="text-slate-400 font-mono mr-1">Gruplar:</span>
+    <details className="group border-b border-slate-700 bg-slate-900 px-3 text-xs">
+      <summary className="touch-target flex cursor-pointer list-none items-center gap-2 text-slate-400 [&::-webkit-details-marker]:hidden"><SlidersHorizontal className="h-3.5 w-3.5" /> Element grupları <span className="ml-auto text-slate-300">{CATEGORIES.find(category => category.id === filterCategory)?.nameTR ?? (filterCategory ? 'Aktinitler' : 'Tümü')}</span><ChevronDown className="h-3.5 w-3.5 group-open:rotate-180" /></summary>
+      <div className="flex flex-wrap gap-1 pb-2">
       {CATEGORIES.map((cat) => {
         const isSelected = filterCategory === cat.id;
         return (
           <button
             key={cat.id}
+            aria-pressed={isSelected}
             onClick={() => setFilterCategory(isSelected ? null : cat.id)}
             className={`px-2 py-1 rounded flex items-center gap-1.5 transition-colors border touch-target ${
               isSelected
@@ -49,6 +52,7 @@ export const CategoryLegend: React.FC = () => {
           Filtreyi Temizle
         </button>
       )}
-    </div>
+      </div>
+    </details>
   );
 };

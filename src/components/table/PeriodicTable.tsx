@@ -64,6 +64,10 @@ export const PeriodicTable: React.FC<{ guided?: boolean; reveal?: RevealPolicy }
 
   return (
     <div className="flex flex-col h-full bg-slate-950 overflow-hidden select-none">
+      <div className="flex items-center justify-between bg-slate-900 px-4 py-3">
+        <h2 className="text-sm font-semibold tracking-tight">Periyodik tablo</h2>
+        <span className="text-[11px] text-slate-400">118 element <span aria-hidden="true">·</span> {guided ? 'Rehberli seçim' : 'İki atom seçerek başla'}</span>
+      </div>
       {/* Search & Selection Bar */}
       <FilterBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} guided={guided} reveal={reveal} />
 
@@ -72,7 +76,7 @@ export const PeriodicTable: React.FC<{ guided?: boolean; reveal?: RevealPolicy }
 
       {/* Main Content Area - Shifted down with comfortable vertical padding & centering */}
       <div className="flex-1 overflow-auto px-3 pt-4 pb-2 flex flex-col justify-between min-h-0">
-        <div className="w-full min-w-[760px] flex flex-col gap-1 my-auto">
+        <div className="w-full min-w-[var(--periodic-table-min-width)] flex flex-col gap-1 my-auto">
           {/* Main 18-column Periodic Table Grid (Periods 1 - 7) */}
           <div className="grid grid-cols-18 gap-1 w-full">
             {/* Period 1 */}
@@ -114,7 +118,7 @@ export const PeriodicTable: React.FC<{ guided?: boolean; reveal?: RevealPolicy }
               onClick={() => setFilterCategory(filterCategory === 'lanthanide' ? null : 'lanthanide')}
               className={`touch-target flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
                 filterCategory === 'lanthanide'
-                  ? 'bg-slate-800 border-white text-slate-50'
+                  ? 'bg-slate-800 border-slate-50 text-slate-50'
                   : 'bg-slate-900/60 border-slate-700/60 text-slate-400 hover:border-slate-500 hover:bg-slate-800'
               }`}
               title="Lantanitler Serisi (57-71)"
@@ -133,7 +137,7 @@ export const PeriodicTable: React.FC<{ guided?: boolean; reveal?: RevealPolicy }
               onClick={() => setFilterCategory(filterCategory === 'actinide' ? null : 'actinide')}
               className={`touch-target flex flex-col items-center justify-center p-1 rounded border text-[9.5px] font-mono transition-colors ${
                 filterCategory === 'actinide'
-                  ? 'bg-slate-800 border-white text-slate-50'
+                  ? 'bg-slate-800 border-slate-50 text-slate-50'
                   : 'bg-slate-900/60 border-slate-700/60 text-slate-400 hover:border-slate-500 hover:bg-slate-800'
               }`}
               title="Aktinitler Serisi (89-103)"

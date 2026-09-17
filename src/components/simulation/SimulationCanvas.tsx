@@ -27,7 +27,7 @@ export const SimulationCanvas: React.FC<{ reveal?: RevealPolicy }> = ({ reveal }
 
   return (
     <div className="flex flex-1 flex-col w-full h-full min-h-0 bg-slate-950 select-none">
-      <div ref={containerRef} className="relative flex-1 min-h-0 w-full overflow-hidden">
+      <div ref={containerRef} className="simulation-surface relative flex-1 min-h-0 w-full overflow-hidden bg-slate-950">
         <SimulationCanvasOverlay reveal={reveal} />
         <canvas
           ref={canvasRef}

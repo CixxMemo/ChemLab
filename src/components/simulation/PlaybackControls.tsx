@@ -59,7 +59,7 @@ export const PlaybackControls: React.FC = () => {
       </div>
 
       {/* Button Controls Bar */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         {/* Left: Step and Play Buttons */}
         <div className="flex items-center gap-1.5">
           {/* Step Back */}
@@ -78,20 +78,20 @@ export const PlaybackControls: React.FC = () => {
             disabled={!isPlayable}
             className={`h-9 px-4 rounded font-mono text-xs font-bold flex items-center gap-2 transition-colors touch-target ${
               playbackStatus === 'playing'
-                ? 'bg-amber-600 hover:bg-amber-500 text-slate-950'
-                : 'bg-chem-transition hover:bg-sky-400 text-slate-950'
+                ? 'bg-amber-600 hover:bg-amber-500 text-[#0B0F17]'
+                : 'bg-chem-transition hover:bg-sky-400 text-[#0B0F17]'
             } disabled:opacity-40 disabled:hover:bg-chem-transition`}
             title={playbackStatus === 'playing' ? 'Durdur' : 'Oynat'}
           >
             {playbackStatus === 'playing' ? (
               <>
                 <Pause className="w-4 h-4 fill-current" />
-                <span>DURDUR</span>
+                <span>Duraklat</span>
               </>
             ) : (
               <>
                 <Play className="w-4 h-4 fill-current" />
-                <span>OYNAT</span>
+                <span>Oynat</span>
               </>
             )}
           </button>

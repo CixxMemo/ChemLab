@@ -3,14 +3,111 @@
 @tailwind utilities;
 
 @layer base {
+  /* Canvas and heatmap surfaces retain the renderer’s dark scientific palette. */
+  :root, .simulation-surface {
+    color-scheme: dark;
+    --ink-transition: #4FA6E0;
+    --ink-alkaline: #E5C07B;
+    --ink-electron: #FDE047;
+    --ink-nonmetal: #98C379;
+    --ink-fblock: #ABB2BF;
+    --ink-ionic: #38BDF8;
+    --ink-polar: #F59E0B;
+    --ink-covalent: #34D399;
+    --ink-halogen: #C678DD;
+    --ink-repulsion: #EF4444;
+
+    --slate-50: 248 250 252;
+    --slate-100: 241 245 249;
+    --slate-200: 226 232 240;
+    --slate-300: 203 213 225;
+    --slate-400: 148 163 184;
+    --slate-500: 100 116 139;
+    --slate-600: 71 85 105;
+    --slate-700: 38 51 69;
+    --slate-800: 30 41 59;
+    --slate-900: 21 28 40;
+    --slate-950: 11 15 23;
+  }
+
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --ink-transition: #216A9B;
+    --ink-alkaline: #805B16;
+    --ink-electron: #806616;
+    --ink-nonmetal: #466F30;
+    --ink-fblock: #526378;
+    --ink-ionic: #126A92;
+    --ink-polar: #895B0D;
+    --ink-covalent: #147454;
+    --ink-halogen: #87459B;
+    --ink-repulsion: #B42332;
+
+    --slate-50: 23 35 53;
+    --slate-100: 30 41 59;
+    --slate-200: 44 59 78;
+    --slate-300: 65 81 101;
+    --slate-400: 82 99 120;
+    --slate-500: 97 112 132;
+    --slate-600: 148 163 184;
+    --slate-700: 208 218 230;
+    --slate-800: 232 238 245;
+    --slate-900: 255 255 255;
+    --slate-950: 245 247 251;
+  }
+
+  :root {
+    /* Eighteen 40px touch targets plus seventeen 4px column gaps. */
+    --periodic-table-min-width: 788px;
+    /* Mobile sections must remain scrollable and leave room for controls. */
+    --mobile-table-height: 640px;
+    --mobile-simulation-height: 700px;
+    /* Drawing area share within the simulator panel; controls occupy the rest. */
+    --simulation-height: 48%;
+    /* Readable share form width, clamped by the header's viewport insets. */
+    --share-panel-width: 480px;
+    /* Track/thumb sizes are independent of the 40px interactive range area. */
+    --range-track-height: 4px;
+    --range-thumb-size: 16px;
+    --range-track-radius: 2px;
+    /* Visible keyboard focus sits outside the control border. */
+    --focus-width: 2px;
+    --focus-offset: 3px;
+  }
+
+  :focus-visible {
+    outline: var(--focus-width) solid #4FA6E0;
+    outline-offset: var(--focus-offset);
+  }
+
+  /* The range keeps its 40px hit area while only the track is painted. */
+  input[type='range'] { background: transparent; }
+  input[type='range']::-webkit-slider-runnable-track {
+    height: var(--range-track-height);
+    border-radius: var(--range-track-radius);
+    background: rgb(var(--slate-700));
+  }
+  input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    width: var(--range-thumb-size);
+    height: var(--range-thumb-size);
+    border-radius: var(--range-thumb-size);
+    background: #4FA6E0;
+    margin-top: calc((var(--range-track-height) - var(--range-thumb-size)) / 2);
+  }
+  input[type='range']::-moz-range-track {
+    height: var(--range-track-height);
+    background: rgb(var(--slate-700));
+  }
+
   * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    background-color: #0B0F17;
-    color: #F8FAFC;
+    background-color: rgb(var(--slate-950));
+    color: rgb(var(--slate-50));
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     margin: 0;
     padding: 0;
@@ -25,14 +122,14 @@
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0B0F17;
+    background: rgb(var(--slate-950));
   }
   ::-webkit-scrollbar-thumb {
-    background: #263345;
+    background: rgb(var(--slate-700));
     border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #475569;
+    background: rgb(var(--slate-600));
   }
 }
 
@@ -40,4 +137,18 @@
 .touch-target {
   min-width: 40px;
   min-height: 40px;
+}
+
+@layer utilities {
+  /* Foreground tones change independently of the fixed scientific category colors. */
+  .text-chem-transition { color: var(--ink-transition); }
+  .text-chem-alkaline { color: var(--ink-alkaline); }
+  .text-chem-electron { color: var(--ink-electron); }
+  .text-chem-nonmetal { color: var(--ink-nonmetal); }
+  .text-chem-fblock { color: var(--ink-fblock); }
+  .text-chem-ionic { color: var(--ink-ionic); }
+  .text-chem-polar { color: var(--ink-polar); }
+  .text-chem-covalent { color: var(--ink-covalent); }
+  .text-chem-halogen { color: var(--ink-halogen); }
+  .text-chem-repulsion { color: var(--ink-repulsion); }
 }

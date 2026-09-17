@@ -38,7 +38,7 @@ export const TeacherSimulationModal: React.FC<{ scopeKey: string; reveal: Reveal
         <button ref={closeRef} type="button" onClick={close} className="touch-target rounded border border-slate-600 px-4 hover:bg-slate-800" aria-label="Büyük ekranı kapat">Kapat ×</button>
       </div>
       <TeacherPresentationControls scopeKey={scopeKey} enableShortcuts={false} />
-      <div ref={containerRef} className="relative min-h-0 flex-1 bg-slate-950">
+      <div ref={containerRef} className="simulation-surface relative min-h-0 flex-1 bg-slate-950">
         <canvas ref={canvasRef} className="block h-full w-full" aria-hidden="true" />
         {!reveal.showCanvas && <div className="absolute inset-0 flex items-center justify-center bg-slate-950 p-6 text-center text-2xl font-semibold" role="status">Atom çifti hazır. Tam çözüm açılınca animasyon gösterilecek.</div>}
       </div>
