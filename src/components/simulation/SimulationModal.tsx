@@ -12,20 +12,17 @@ import {
   SkipBack,
   SkipForward,
   RotateCcw,
-  Sparkles,
   Zap,
   Activity,
   ShieldCheck,
   Info
 } from 'lucide-react';
 
-export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false }) => {
+export const SimulationModal: React.FC = () => {
   const { isAnimationModalOpen, closeAnimationModal } = useUIStore();
   const {
     activeScenario,
     selectedElements,
-    scenarios,
-    loadScenarioById,
     playbackStatus,
     setPlaybackStatus,
     progress,
@@ -186,31 +183,6 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
               <span>{bondTypeLabel}</span>
             </div>
           </div>
-
-          {/* Center: Scenario Quick Switcher */}
-          {!guided && <div className="hidden lg:flex items-center gap-1 bg-slate-900 p-1 rounded border border-slate-800">
-            <span className="text-[11px] font-mono text-slate-400 px-1.5 flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-chem-alkaline" />
-              Senaryolar:
-            </span>
-            {scenarios.map((sc) => {
-              const isActive = activeScenario?.id === sc.id;
-              return (
-                <button
-                  key={sc.id}
-                  onClick={() => loadScenarioById(sc.id)}
-                  className={`h-7 px-2.5 rounded font-mono text-xs font-semibold transition-colors flex items-center justify-center touch-target ${
-                    isActive
-                      ? 'bg-slate-800 text-slate-50 border border-chem-highlight'
-                      : 'bg-transparent text-slate-400 hover:text-slate-200'
-                  }`}
-                  title={sc.nameTR}
-                >
-                  {sc.formula}
-                </button>
-              );
-            })}
-          </div>}
 
           {/* Right: Close Button */}
           <div className="flex items-center gap-2">
@@ -378,23 +350,6 @@ export const SimulationModal: React.FC<{ guided?: boolean }> = ({ guided = false
                 <RotateCcw className="w-4 h-4" />
               </button>
             </div>
-
-            {/* Mobile / Compact Scenario Selector */}
-            {!guided && <div className="flex max-w-full lg:hidden items-center gap-1 overflow-x-auto bg-slate-950 p-1 rounded border border-slate-800">
-              {scenarios.map((sc) => (
-                <button
-                  key={sc.id}
-                  onClick={() => loadScenarioById(sc.id)}
-                  className={`touch-target h-10 shrink-0 px-2 rounded font-mono text-[11px] font-semibold ${
-                    activeScenario?.id === sc.id
-                      ? 'bg-slate-800 text-slate-50 border border-chem-highlight'
-                      : 'text-slate-400'
-                  }`}
-                >
-                  {sc.formula}
-                </button>
-              ))}
-            </div>}
 
             {/* Right: Playback Speed Selector */}
             <div className="flex items-center gap-1 bg-slate-950 p-1 rounded border border-slate-700">

@@ -36,7 +36,7 @@ export const TeacherPresentationControls: React.FC<{ scopeKey: string; enableSho
     return () => window.removeEventListener('keydown', handlePresentationKey);
   }, [enableShortcuts]);
 
-  return <section aria-label="Öğretmen sunum kontrolleri" className="mx-3 shrink-0 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2">
+  return <section aria-label="Öğretmen sunum kontrolleri" className="shrink-0 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2">
     <div className="flex flex-wrap items-center gap-2">
       <span className="mr-2 inline-flex items-center gap-2 text-xs font-semibold text-slate-300"><Presentation className="h-4 w-4 text-chem-transition" /> Sunum</span>
       <button type="button" onClick={() => showPrediction(scopeKey)} className={CONTROL_CLASS}><RotateCcw className="h-3.5 w-3.5" /> Tahmin görünümü</button>

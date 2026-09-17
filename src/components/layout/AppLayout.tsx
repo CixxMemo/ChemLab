@@ -22,15 +22,15 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ guided = false, presentati
   const reveal = presentationKey ? getRevealPolicy(scope === presentationKey ? level : 0) : undefined;
   return (
     <div className="flex flex-col h-full min-h-0 w-full bg-slate-950 text-slate-50 overflow-auto lg:overflow-hidden select-none">
-      {/* Top Application Header */}
-      <Header guided={guided} shareScenarioId={presentationScenarioId} />
-      {presentationKey && <TeacherPresentationControls scopeKey={presentationKey} />}
-
       {/* Main two-column workspace: 60% table, 40% simulation and theory. */}
       <div className="flex flex-col gap-3 p-3 lg:flex-row flex-1 lg:min-h-0 lg:overflow-hidden">
-        {/* Left Column: 18-column Periodic Table (60% width) */}
-        <section className="w-full lg:w-[60%] min-h-[var(--mobile-table-height)] lg:min-h-0 lg:h-full overflow-hidden rounded-xl border border-slate-700 flex flex-col min-w-0">
-          <PeriodicTable guided={guided} reveal={reveal} />
+        {/* Keep teacher tools with the table, leaving the full right-column height for the experiment. */}
+        <section className="flex w-full min-w-0 flex-col gap-3 lg:h-full lg:min-h-0 lg:w-[60%]">
+          <Header guided={guided} shareScenarioId={presentationScenarioId} />
+          {presentationKey && <TeacherPresentationControls scopeKey={presentationKey} />}
+          <div className="flex min-h-[var(--mobile-table-height)] min-w-0 flex-col overflow-hidden rounded-xl border border-slate-700 lg:min-h-0 lg:flex-1">
+            <PeriodicTable guided={guided} reveal={reveal} />
+          </div>
         </section>
 
         {/* Right Column: Canvas Simulator + Controls + Live Theory (40% width) */}
@@ -53,7 +53,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ guided = false, presentati
       {/* Large-Scale Simulation & Animation Modal */}
       {presentationKey && reveal
         ? <TeacherSimulationModal scopeKey={presentationKey} reveal={reveal} />
-        : <SimulationModal guided={guided} />}
+        : <SimulationModal />}
     </div>
   );
 };

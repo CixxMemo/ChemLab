@@ -1,6 +1,7 @@
 import React from 'react';
 import { useChemistryStore } from '../../store/useChemistryStore';
-import { Search, X, CheckCircle2 } from 'lucide-react';
+import { Search, X, CheckCircle2, Layers } from 'lucide-react';
+import { useUIStore } from '../../store/useUIStore';
 import { RevealPolicy } from '../../presentation/revealPolicy';
 
 interface FilterBarProps {
@@ -12,6 +13,8 @@ interface FilterBarProps {
 
 export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuery, guided = false, reveal }) => {
   const { selectedElements, deselectElement, activeScenario } = useChemistryStore();
+  const viewMode = useUIStore(state => state.viewMode);
+  const setViewMode = useUIStore(state => state.setViewMode);
 
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 px-3 py-2 bg-slate-900 border-b border-slate-700 select-none">
@@ -37,6 +40,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({ searchQuery, setSearchQuer
           </button>
         )}
       </div>
+
+      <button type="button" onClick={() => setViewMode(viewMode === 'standard' ? 'electronegativity' : 'standard')}
+        aria-pressed={viewMode === 'electronegativity'} title="Elektronegatiflik haritası"
+        className={`touch-target inline-flex items-center justify-center gap-2 rounded-lg border px-3 text-xs ${viewMode === 'electronegativity' ? 'border-chem-metalloid bg-slate-800 text-slate-50' : 'border-slate-700 bg-slate-950 text-slate-300 hover:bg-slate-800'}`}>
+        <Layers className="h-4 w-4" /> EN haritası
+      </button>
 
       {/* Selected Element Chips */}
       <div className="flex flex-wrap items-center gap-2">
